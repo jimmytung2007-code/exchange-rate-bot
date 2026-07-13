@@ -1,0 +1,29 @@
+name: Collect Exchange Rates
+
+on:
+  schedule:
+    - cron: '0 */2 * * *'  # Chạy mỗi 2 tiếng
+  workflow_dispatch:  # Cho phép chạy thủ công
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          playwright install
+      
+      - name: Run scraper
+        env:
+          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+          SHEET_ID: ${{ secrets.SHEET_ID }}
+        run: python scrape_exchange_rate.py
