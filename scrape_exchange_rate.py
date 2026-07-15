@@ -6,6 +6,7 @@ from google.oauth2.service_account import Credentials
 import json
 import os
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from playwright.async_api import async_playwright
 import asyncio
 
@@ -476,7 +477,7 @@ def get_rate(bank, currency, side):
 async def write_to_sheets():
     mua_sheet = sheet.worksheet('Mua vào')
     ban_sheet = sheet.worksheet('Bán ra')
-    timestamp = datetime.now().strftime('%d/%m/%Y %H:%M')
+    timestamp = datetime.now(ZoneInfo('Asia/Ho_Chi_Minh')).strftime('%d/%m/%Y %H:%M')
 
     for currency in CURRENCIES:
         mua_row = [timestamp, currency] + [get_rate(b, currency, 'mua') for b in BANKS_ORDER]
