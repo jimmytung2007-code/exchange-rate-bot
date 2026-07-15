@@ -479,11 +479,19 @@ async def write_to_sheets():
     ban_sheet = sheet.worksheet('Bán ra')
     timestamp = datetime.now(ZoneInfo('Asia/Ho_Chi_Minh')).strftime('%d/%m/%Y %H:%M')
 
+    mua_rows = []
+    ban_rows = []
     for currency in CURRENCIES:
-        mua_row = [timestamp, currency] + [get_rate(b, currency, 'mua') for b in BANKS_ORDER]
-        ban_row = [timestamp, currency] + [get_rate(b, currency, 'ban') for b in BANKS_ORDER]
-        mua_sheet.append_row(mua_row)
-        ban_sheet.append_row(ban_row)
+        mua_rows.append([timestamp, currency] + [get_rate(b, currency, 'mua') for b in BANKS_ORDER])
+        ban_rows.append([timestamp, currency] + [get_rate(b, currency, 'ban') for b in BANKS_ORDER])
+
+    # Them 1 dong trong de ngan cach voi lan ghi truoc do
+    empty_row = [''] * (2 + len(BANKS_ORDER))
+    mua_rows.append(empty_row)
+    ban_rows.append(empty_row)
+
+    mua_sheet.append_rows(mua_rows)
+    ban_sheet.append_rows(ban_rows)
 
     print("Da ghi vao Google Sheets thanh cong!")
 
