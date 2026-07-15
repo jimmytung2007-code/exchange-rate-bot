@@ -2,28 +2,37 @@ name: Collect Exchange Rates
 
 on:
   schedule:
-    - cron: '0 */2 * * *'  # Chạy mỗi 2 tiếng
-  workflow_dispatch:  # Cho phép chạy thủ công
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      
+      - uses: actions/checkout@v4
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      
-      - name: Install dependencies
+          python-version: '3.12'
+
+      - name: Install system dependencies (Xvfb)
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          playwright install
-      
+
+      - name: Install Playwright browsers
+        run: |
+          playwright install --with-deps chromium
+          playwright install --with-deps chrome
+
+      - name: Write credentials.json from secret
+        run: echo '${{ secrets.GCP_CREDENTIALS }}' > credentials.json
+
       - name: Run scraper
         env:
-          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
           SHEET_ID: ${{ secrets.SHEET_ID }}
-        run: python scrape_exchange_rate.py
+        run: xvfb-run -a python scrape_exchange_rate.py

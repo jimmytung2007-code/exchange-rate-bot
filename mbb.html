@@ -1,0 +1,1233 @@
+<body id="BODY" layout-code="_About" class="">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NDT8GP5N"
+                height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <div id="AntiForgeyToken"><input name="__RequestVerificationToken" type="hidden" value="jKhYUVP4NN4xqiBY9iOuy4162NuaeR8-tbsJf7eD3CxNvcYxXkTrmeSb6LxRD7XIx2wWMdFEk_091-AyRkQmgGbzyjBTJ3zBY8pajV79D681"></div>
+<style type="text/css">
+    @media (min-width: 768px) and (max-width: 992px) {
+        .header-right-search input {
+	        width: 150px;
+	        margin: 12px 15px 0 0;
+        }
+    }
+    .mb-header-left-option li a.header-lang {
+        display: block;
+        width: 25px;
+        height: 14px;
+        margin-top: 12px;
+        margin-left: 15px;
+        margin-bottom: 25px;
+        background-size: 25px 14px !important;
+    }
+    .mb-header-left-option li a.header-lang[lang="VI"] {
+        background: url(../../img/en.png);
+    }
+    .mb-header-left-option li a.header-lang[lang="EN"] {
+	    background: url(../../img/vi.png);
+    }
+</style>
+<script>
+    function addParamsURL(key, val, url) {
+        var arr = url.split('?');
+        if (arr.length == 1) {
+            return url + '?' + key + '=' + val;
+        }
+        else if (arr.length == 2) {
+            var params = arr[1].split('&');
+            var p = {};
+            var a = [];
+            var strarr = [];
+            $.each(params, function (index, element) {
+                a = element.split('=');
+                p[a[0]] = a[1];
+            })
+            p[key] = val;
+            for (var o in p) {
+                strarr.push(o + '=' + p[o]);
+            }
+            var str = strarr.join('&');
+            return (arr[0] + '?' + str);
+        }
+    }
+    function getChangeLanguage(flaglanguage) {
+        var url = window.location.href;
+        url = url.replace("#!#c-1", "");
+        if (flaglanguage != 'VI' && flaglanguage != null) {
+            return addParamsURL('lang', flaglanguage, url);
+        } else {
+            url = url.replace("lang=EN", "");
+            if (url.substr(-1) === "?") {
+                url = url.replace("?", "");
+            }
+            return url;
+        }
+
+    }
+</script>
+<div class="mb-header clearfix">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8">
+                <button type="button" onclick="ToggleTopMenu();" class="acall_nav_toggle navbar-toggle"><i class="material-icons md-24">menu</i></button>
+                <div class="navbar-collapse collapse mb-header-left clearfix" id="header-menu-left" style="padding-right: 0 !important;">
+                    <ul class="mb-header-left-option track by $index" ng-controller="menuTop">
+                        <!----><li ng-repeat="x in myData" ng-class="{ 'header-option-vip':(x.alias== 'ca-nhan-cao-cap')}">
+
+                            <a href="/home/ca-nhan" ng-class="{ 'active':((x.id== 26) || (x.alias==''))}" ng-bind="x.title" class="active">Cá nhân</a>
+                        </li><!----><li ng-repeat="x in myData" ng-class="{ 'header-option-vip':(x.alias== 'ca-nhan-cao-cap')}">
+
+                            <a href="/home/doanh-nghiep" ng-class="{ 'active':((x.id== 26) || (x.alias==''))}" ng-bind="x.title">Doanh nghiệp vừa và nhỏ</a>
+                        </li><!----><li ng-repeat="x in myData" ng-class="{ 'header-option-vip':(x.alias== 'ca-nhan-cao-cap')}">
+
+                            <a href="/home/doanh-nghiep-cib" ng-class="{ 'active':((x.id== 26) || (x.alias==''))}" ng-bind="x.title">Doanh nghiệp lớn</a>
+                        </li><!----><li ng-repeat="x in myData" ng-class="{ 'header-option-vip':(x.alias== 'ca-nhan-cao-cap')}">
+
+                            <a href="/home/khach-hang-dinh-che" ng-class="{ 'active':((x.id== 26) || (x.alias==''))}" ng-bind="x.title">Khách hàng định chế</a>
+                        </li><!----><li ng-repeat="x in myData" ng-class="{ 'header-option-vip':(x.alias== 'ca-nhan-cao-cap')}" class="header-option-vip">
+
+                            <a href="/home/ca-nhan-cao-cap" ng-class="{ 'active':((x.id== 26) || (x.alias==''))}" ng-bind="x.title">MB PRIORITY</a>
+                        </li><!---->
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="mb-header-right clearfix">
+                    <div class="topnav" id="myTopnav" ng-controller="menuTop-Second">
+                        <!----><any class="menu-right-item" ng-repeat="x in myData track by $index">
+
+                            <a ng-href="/About/ve-mb" ng-bind="x.title" ng-show="!x.isRedirectLink" href="/About/ve-mb">Về MB</a>
+                            <a ng-href="" ng-show="x.isRedirectLink" ng-bind="x.title" class="ng-hide">Về MB</a>
+                        </any><!----><any class="menu-right-item" ng-repeat="x in myData track by $index">
+
+                            <a ng-href="/Investor/nha-dau-tu" ng-bind="x.title" ng-show="!x.isRedirectLink" href="/Investor/nha-dau-tu">Nhà đầu tư</a>
+                            <a ng-href="" ng-show="x.isRedirectLink" ng-bind="x.title" class="ng-hide">Nhà đầu tư</a>
+                        </any><!----><any class="menu-right-item" ng-repeat="x in myData track by $index">
+
+                            <a ng-href="/news/tin-tuc" ng-bind="x.title" ng-show="!x.isRedirectLink" href="/news/tin-tuc">Tin tức</a>
+                            <a ng-href="" ng-show="x.isRedirectLink" ng-bind="x.title" class="ng-hide">Tin tức</a>
+                        </any><!----><any class="menu-right-item" ng-repeat="x in myData track by $index">
+
+                            <a ng-href="/Recruitment/tuyen-dung" ng-bind="x.title" ng-show="!x.isRedirectLink" href="/Recruitment/tuyen-dung" class="ng-hide">Tuyển dụng</a>
+                            <a ng-href="https://careers.mbbank.com.vn/home-page" ng-show="x.isRedirectLink" ng-bind="x.title" href="https://careers.mbbank.com.vn/home-page">Tuyển dụng</a>
+                        </any><!---->
+                        <any class="menu-right-item">
+                                    <a style="cursor:pointer;padding:0px" class="header-lang" onclick="docChangeLanguage('EN');" lang="EN" title="English"></a>
+
+                        </any>
+                        <any>
+                            <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+                                <i class="material-icons md-24">menu</i>
+                            </a>
+                        </any>
+                    </div>
+
+                </div>
+            </div>
+        </div><!--END row-->
+    </div><!--END container-->
+</div><!--END mb-header-->
+
+
+<script>
+    function ToggleTopMenu() {
+        if ($(".mb-header-left-option .menu-append").length > 0) {
+            $(".mb-header-left-option .menu-append").remove();
+        }
+        if ($("#header-menu-left").is(":visible")) {
+            $("#header-menu-left").hide();
+        } else {
+            $("#myTopnav .menu-right-item").each(function (index) {
+                $(".mb-header-left-option").append("<li class='menu-append'>" + $(this).html() + "</li>");
+            });
+          //  $(".mb-header-left-option").append("<li class='menu-append'>" + $("#myTopnav .menu-right-lang").html() + "</li>");
+            $menuLang = $(".menu-append .header-lang");
+            if ($menuLang.attr("lang") == "VI") {
+                flaglanguage = "EN";
+                $menuLang.attr("href", getChangeLanguage(null));
+            } else {
+                flaglanguage = "VI";
+                $menuLang.attr("href", getChangeLanguage('EN'));
+            }
+            sessionStorage.setItem("flaglanguage", flaglanguage);
+            //$menuLang.removeAttr("onclick");
+            $("#header-menu-left").show();
+        }
+    }
+</script>
+
+<script type="text/javascript">
+        var parent_id = 26;
+        var id=0
+        var cid=0;
+        var cata_id=0;
+        var alias='ca-nhan';
+        var current_alias="ca-nhan";
+        var year=2016;
+        var tabId='';
+
+        parent_id=26;
+        id=0;
+        cid=0;
+        page=1;
+        cata_id=1;
+        year=2016;
+        alias='ca-nhan';
+        tabId='';
+        current_alias='';
+    var configreferrer='';
+  
+</script>
+
+
+<div class="mb-header-menu" ng-controller="menuMain">
+    <div class="container">
+        <div class="dflex dflex-row mb-header-menu-content">
+            <div class="dflex dflex-row">
+                    <a href="/home" class="mb-header-logo"><img src="/images/logo.png" alt=""></a>
+                <div class="header-menu-left">
+                    <ul class="header-menu-left-option">
+                        <!----><!----><li ng-class="{ 'dropdown dropdown-mega':(link.numberOfchild &gt;= 1),'dropdown':!(link.numberOfchild &gt;= 1),'active':link.isActive}" ng-repeat="link in myData track by $index" emit-last-repeater-element="" ng-include="" src="(link.numberOfchild &gt;= 1)?'menu-dropdown.html': ((link.alias == 'dang-ky-trai-nghiem-doanh-nghiep'  || link.alias == 'dang-ky-trai-nghiem-prioriry') ? 'singup-popup.html' : 'menu-single.html')" class="dropdown dropdown-mega">
+
+    <a href="/26/27/san-pham/san-pham" class="dropdown-toggle" style="z-index: 1;">
+        Sản phẩm <span ng-show="link.children.length&gt;0" class="caret"></span>
+    </a>
+    <!----><div data-ng-if="link.children.length&gt;0" ng-init="firstIndex = $index" ng-hide="link.numberOfchild&lt;1?true:false" class="dropdown-content top-menu-container">
+        <div class="container">
+            <!----><div class="row" ng-repeat="i in getRange(1, Math.ceil(link.children.length / 3))">
+                <!----><div class="col-sm-3" ng-repeat="j in getRange(i*3-3, i*3-1)" ng-init="sublink1=link.children[j]" ng-show="sublink1!=null">
+
+                    <div class="header-menu-left-list clearfix">
+                        <ul>
+                            <li><span class="header-menu-icon"><img src="/resources/files/KHCN/ICONNHDTNEW/ic-cn-sp-nh-dtu.png"></span>Ngân hàng số khách hàng cá nhân</li>
+                            <!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/265/2695/san-pham-all/money-chat-2026-7-10-11-13-21" ng-bind="sublink2.title">Money Chat</a>
+                            </li><!----><!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/265/2671/san-pham-all/mb-tap-go-2026-5-26-14-0-26" ng-bind="sublink2.title">MB TAP &amp; GO</a>
+                            </li><!----><!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/265/2458/san-pham-all/qr-tra-sau-2025-2-14-15-3-9" ng-bind="sublink2.title">QR trả sau</a>
+                            </li><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!---->
+                                <li ng-show="firstIndex==0"><a href="/26/265/san-pham/ngan-hang-so-2018-8-13-16-31-5" class="link">Tất cả sản phẩm &gt;</a></li>
+
+                        </ul>
+                    </div>
+                </div><!----><div class="col-sm-3" ng-repeat="j in getRange(i*3-3, i*3-1)" ng-init="sublink1=link.children[j]" ng-show="sublink1!=null">
+
+                    <div class="header-menu-left-list clearfix">
+                        <ul>
+                            <li><span class="header-menu-icon"><img src="/resources/files/KHCN/ICONTIENGUINEW/ic-cn-sp-tiengui.png"></span>Tiền gửi</li>
+                            <!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/28/2645/san-pham-all/chuyen-nhuong-so-tiet-kiem-2026-3-13-18-20-7" ng-bind="sublink2.title">Chuyển nhượng sổ tiết kiệm</a>
+                            </li><!----><!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/28/2610/san-pham-all/xuan-gan-ket-loc-ven-toan-gui-tiet-kiem-tai-quay-nhan-li-xi-lien-tay-2026-2-10-15-4-17" ng-bind="sublink2.title">XUÂN GẮN KẾT LỘC VẸN TOÀN - GỬI TIẾT KIỆM TẠI QUẦY NHẬN LÌ XÌ LIỀN TAY</a>
+                            </li><!----><!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/28/1272/san-pham-all/tien-gui-so-co-dinh-2023-7-26-11-52-34" ng-bind="sublink2.title">Tiền gửi số cố định</a>
+                            </li><!----><!----><!----><!----><!----><!---->
+                                <li ng-show="firstIndex==0"><a href="/26/28/san-pham/tien-gui" class="link">Tất cả sản phẩm &gt;</a></li>
+
+                        </ul>
+                    </div>
+                </div><!----><div class="col-sm-3" ng-repeat="j in getRange(i*3-3, i*3-1)" ng-init="sublink1=link.children[j]" ng-show="sublink1!=null">
+
+                    <div class="header-menu-left-list clearfix">
+                        <ul>
+                            <li><span class="header-menu-icon"><img src="/resources/files/KHCN/ICONCanhan-Sanpham/ic-cn-sp-chovay.svg"></span>Cho vay khách hàng cá nhân</li>
+                            <!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/36/2603/san-pham-all/don-xuan-loc-tai-%E2%80%93-khoi-dau-thinh-vuong-cung-mb-2026-1-20-19-5-3" ng-bind="sublink2.title">ĐÓN XUÂN LỘC TÀI – KHỞI ĐẦU THỊNH VƯỢNG CÙNG MB</a>
+                            </li><!----><!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/36/37/san-pham-all/bat-dong-san" ng-bind="sublink2.title">Bất động sản</a>
+                            </li><!----><!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/36/44/san-pham-all/sxkd" ng-bind="sublink2.title">Sản xuất kinh doanh</a>
+                            </li><!----><!----><!----><!----><!----><!----><!----><!---->
+                                <li ng-show="firstIndex==0"><a href="/26/36/san-pham/cho-vay" class="link">Tất cả sản phẩm &gt;</a></li>
+
+                        </ul>
+                    </div>
+                </div><!---->
+                <div class="col-sm-3" ng-show="i==1">
+                    <div class="header-menu-left-list clearfix">
+                            <ul>
+                                <li>Hỗ trợ</li>
+                                <li><a style="color:#252525 !important" href="/Support">Trung tâm dịch vụ khách hàng 24/7</a></li>
+                            </ul>
+                    </div>
+                </div>
+            </div><!----><div class="row" ng-repeat="i in getRange(1, Math.ceil(link.children.length / 3))">
+                <!----><div class="col-sm-3" ng-repeat="j in getRange(i*3-3, i*3-1)" ng-init="sublink1=link.children[j]" ng-show="sublink1!=null">
+
+                    <div class="header-menu-left-list clearfix">
+                        <ul>
+                            <li><span class="header-menu-icon"><img src="/resources/files/KHCN/ICONCanhan-Sanpham/ic-cn-sp-dvu-the.svg"></span>Dịch vụ thẻ</li>
+                            <!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/46/213/san-pham-all/the-tin-dung" ng-bind="sublink2.title">Thẻ tín dụng</a>
+                            </li><!----><!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/46/1316/san-pham-all/the-da-nang-hybrid-2022-6-14-13-49-16" ng-bind="sublink2.title">Thẻ đa năng Hybrid </a>
+                            </li><!----><!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/46/212/san-pham-all/the-ghi-no-va-the-quang-cao-2026-3-3-17-22-40" ng-bind="sublink2.title">Thẻ ghi nợ và Thẻ quảng cáo</a>
+                            </li><!----><!----><!----><!----><!----><!---->
+                                <li ng-show="firstIndex==0"><a href="/26/46/san-pham/dich-vu-the" class="link">Tất cả sản phẩm &gt;</a></li>
+
+                        </ul>
+                    </div>
+                </div><!----><div class="col-sm-3" ng-repeat="j in getRange(i*3-3, i*3-1)" ng-init="sublink1=link.children[j]" ng-show="sublink1!=null">
+
+                    <div class="header-menu-left-list clearfix">
+                        <ul>
+                            <li><span class="header-menu-icon"><img src="/resources/files/KHCN/ICONCanhan-Sanpham/ic-cn-sp-chuyentien-ttoan.svg"></span>Chuyển tiền, thanh toán khách hàng cá nhân</li>
+                            <!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/98/2589/san-pham-all/mo-tai-khoan-ngoai-te-tren-app-mbbank-nhan-kieu-hoi-mien-phi-2025-12-15-13-41-53" ng-bind="sublink2.title">MỞ TÀI KHOẢN NGOẠI TỆ TRÊN APP MBBANK - NHẬN KIỀU HỐI MIỄN PHÍ</a>
+                            </li><!----><!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/98/101/san-pham-all/chuyen-tien-ra-nuoc-ngoai-2018-8-14-10-52-24" ng-bind="sublink2.title">Chuyển tiền ra nước ngoài</a>
+                            </li><!----><!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/98/218/san-pham-all/nhan-tien-ve-viet-nam-2018-8-14-10-54-17" ng-bind="sublink2.title">Nhận tiền về Việt Nam</a>
+                            </li><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!---->
+                                <li ng-show="firstIndex==0"><a href="/26/98/san-pham/chuyen-tien-thanh-toan" class="link">Tất cả sản phẩm &gt;</a></li>
+
+                        </ul>
+                    </div>
+                </div><!----><div class="col-sm-3" ng-repeat="j in getRange(i*3-3, i*3-1)" ng-init="sublink1=link.children[j]" ng-show="sublink1!=null">
+
+                    <div class="header-menu-left-list clearfix">
+                        <ul>
+                            <li><span class="header-menu-icon"><img src="/resources/files/KHCN/ICONCanhan-Sanpham/ic-cn-sp-dvu-khac.svg"></span>Dịch vụ khác cho khách hàng cá nhân</li>
+                            <!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/157/1258/san-pham-all/dich-vu-thu-ho-ngan-sach-nha-nuoc-2019-6-7-15-36-12" ng-bind="sublink2.title">Dịch vụ thu hộ ngân sách nhà nước</a>
+                            </li><!----><!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/157/2655/san-pham-all/qr-tra-sau-2026-4-16-10-23-45" ng-bind="sublink2.title">QR trả sau</a>
+                            </li><!----><!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/157/207/san-pham-all/dich-vu-tai-khoan-2018-8-14-16-42-13" ng-bind="sublink2.title">Dịch vụ tài khoản</a>
+                            </li><!----><!----><!----><!----><!----><!----><!----><!---->
+                                <li ng-show="firstIndex==0"><a href="/26/157/san-pham/dich-vu-khac-2018-8-14-16-17-11" class="link">Tất cả sản phẩm &gt;</a></li>
+
+                        </ul>
+                    </div>
+                </div><!---->
+                <div class="col-sm-3 ng-hide" ng-show="i==1">
+                    <div class="header-menu-left-list clearfix">
+                            <ul>
+                                <li>Hỗ trợ</li>
+                                <li><a style="color:#252525 !important" href="/Support">Trung tâm dịch vụ khách hàng 24/7</a></li>
+                            </ul>
+                    </div>
+                </div>
+            </div><!----><div class="row" ng-repeat="i in getRange(1, Math.ceil(link.children.length / 3))">
+                <!----><div class="col-sm-3" ng-repeat="j in getRange(i*3-3, i*3-1)" ng-init="sublink1=link.children[j]" ng-show="sublink1!=null">
+
+                    <div class="header-menu-left-list clearfix">
+                        <ul>
+                            <li><span class="header-menu-icon"><img src="/resources/files/KHCN/MBAL/favicon-24-x-24.png"></span>Bảo hiểm nhân thọ cho khách hàng cá nhân</li>
+                            <!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/1163/1164/san-pham-all/cac-san-pham-chinh-2019-4-25-17-49-13" ng-bind="sublink2.title">Các sản phẩm chính</a>
+                            </li><!----><!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/1163/1165/san-pham-all/san-pham-goi-2019-4-26-14-52-53" ng-bind="sublink2.title">Sản phẩm gói</a>
+                            </li><!----><!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/26/1163/1248/san-pham-all/san-pham-lien-ket-khoan-vay-2019-4-26-15-14-26" ng-bind="sublink2.title">Sản phẩm liên kết khoản vay</a>
+                            </li><!----><!----><!----><!---->
+                                <li ng-show="firstIndex==0"><a href="/26/1163/san-pham/27-bao-hiem-nhan-tho" class="link">Tất cả sản phẩm &gt;</a></li>
+
+                        </ul>
+                    </div>
+                </div><!----><div class="col-sm-3 ng-hide" ng-repeat="j in getRange(i*3-3, i*3-1)" ng-init="sublink1=link.children[j]" ng-show="sublink1!=null">
+
+                    <div class="header-menu-left-list clearfix">
+                        <ul>
+                            <li><span class="header-menu-icon"><img></span></li>
+                            <!---->
+                                <li ng-show="firstIndex==0"><a href="///san-pham/" class="link">Tất cả sản phẩm &gt;</a></li>
+
+                        </ul>
+                    </div>
+                </div><!----><div class="col-sm-3 ng-hide" ng-repeat="j in getRange(i*3-3, i*3-1)" ng-init="sublink1=link.children[j]" ng-show="sublink1!=null">
+
+                    <div class="header-menu-left-list clearfix">
+                        <ul>
+                            <li><span class="header-menu-icon"><img></span></li>
+                            <!---->
+                                <li ng-show="firstIndex==0"><a href="///san-pham/" class="link">Tất cả sản phẩm &gt;</a></li>
+
+                        </ul>
+                    </div>
+                </div><!---->
+                <div class="col-sm-3 ng-hide" ng-show="i==1">
+                    <div class="header-menu-left-list clearfix">
+                            <ul>
+                                <li>Hỗ trợ</li>
+                                <li><a style="color:#252525 !important" href="/Support">Trung tâm dịch vụ khách hàng 24/7</a></li>
+                            </ul>
+                    </div>
+                </div>
+            </div><!---->
+        </div>
+    </div><!---->
+</li><!----><!----><li ng-class="{ 'dropdown dropdown-mega':(link.numberOfchild &gt;= 1),'dropdown':!(link.numberOfchild &gt;= 1),'active':link.isActive}" ng-repeat="link in myData track by $index" emit-last-repeater-element="" ng-include="" src="(link.numberOfchild &gt;= 1)?'menu-dropdown.html': ((link.alias == 'dang-ky-trai-nghiem-doanh-nghiep'  || link.alias == 'dang-ky-trai-nghiem-prioriry') ? 'singup-popup.html' : 'menu-single.html')" class="dropdown dropdown-mega">
+
+    <a href="/26/106/san-pham/cong-cu" class="dropdown-toggle" style="z-index: 1;">
+        Công cụ <span ng-show="link.children.length&gt;0" class="caret"></span>
+    </a>
+    <!----><div data-ng-if="link.children.length&gt;0" ng-init="firstIndex = $index" ng-hide="link.numberOfchild&lt;1?true:false" class="dropdown-content top-menu-container">
+        <div class="container">
+            <!----><div class="row" ng-repeat="i in getRange(1, Math.ceil(link.children.length / 3))">
+                <!----><div class="col-sm-3" ng-repeat="j in getRange(i*3-3, i*3-1)" ng-init="sublink1=link.children[j]" ng-show="sublink1!=null">
+
+                    <div class="header-menu-left-list clearfix">
+                        <ul>
+                            <li><span class="header-menu-icon"><img src="/resources/files/KHCN/ICONCongcu/ic-cn-cc-tlie-bmau.svg"></span>Tài liệu biểu mẫu</li>
+                            <!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/Documents/" ng-bind="sublink2.title">Chi tiết Tài liệu biểu mẫu</a>
+                            </li><!----><!---->
+                                <li ng-show="firstIndex==0" class="ng-hide"><a href="/26/355/san-pham/tai-lieu-bieu-mau-2018-5-25-14-36-48" class="link">Tất cả sản phẩm &gt;</a></li>
+
+                        </ul>
+                    </div>
+                </div><!----><div class="col-sm-3" ng-repeat="j in getRange(i*3-3, i*3-1)" ng-init="sublink1=link.children[j]" ng-show="sublink1!=null">
+
+                    <div class="header-menu-left-list clearfix">
+                        <ul>
+                            <li><span class="header-menu-icon"><img src="/resources/files/KHCN/ICONCongcu/ic-cn-cc-ttoan.svg"></span>Công cụ tính toán</li>
+                            <!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/Tools/tien-gui" ng-bind="sublink2.title">Tính toán khoản vay và tiền gửi</a>
+                            </li><!----><!---->
+                                <li ng-show="firstIndex==0" class="ng-hide"><a href="/26/396/san-pham/cong-cu-tinh-toan-khoan-vay-va-tien-gui" class="link">Tất cả sản phẩm &gt;</a></li>
+
+                        </ul>
+                    </div>
+                </div><!----><div class="col-sm-3" ng-repeat="j in getRange(i*3-3, i*3-1)" ng-init="sublink1=link.children[j]" ng-show="sublink1!=null">
+
+                    <div class="header-menu-left-list clearfix">
+                        <ul>
+                            <li><span class="header-menu-icon"><img></span>Tra cứu</li>
+                            <!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="/CheckSavingAccount/Index" ng-bind="sublink2.title">Tra cứu tiền gửi tiết kiệm</a>
+                            </li><!----><!---->
+                                <li ng-show="firstIndex==0" class="ng-hide"><a href="/26/1231/san-pham/tra-cuu-2018-12-4-19-3-36" class="link">Tất cả sản phẩm &gt;</a></li>
+
+                        </ul>
+                    </div>
+                </div><!---->
+                <div class="col-sm-3" ng-show="i==1">
+                    <div class="header-menu-left-list clearfix">
+                            <ul>
+                                <li>Hỗ trợ</li>
+                                <li><a style="color:#252525 !important" href="/Support">Trung tâm dịch vụ khách hàng 24/7</a></li>
+                            </ul>
+                    </div>
+                </div>
+            </div><!---->
+        </div>
+    </div><!---->
+</li><!----><!----><li ng-class="{ 'dropdown dropdown-mega':(link.numberOfchild &gt;= 1),'dropdown':!(link.numberOfchild &gt;= 1),'active':link.isActive}" ng-repeat="link in myData track by $index" emit-last-repeater-element="" ng-include="" src="(link.numberOfchild &gt;= 1)?'menu-dropdown.html': ((link.alias == 'dang-ky-trai-nghiem-doanh-nghiep'  || link.alias == 'dang-ky-trai-nghiem-prioriry') ? 'singup-popup.html' : 'menu-single.html')" class="dropdown dropdown-mega">
+
+    <a href="/26/107/san-pham/uu-dai" class="dropdown-toggle" style="z-index: 1;">
+        Ưu đãi <span ng-show="link.children.length&gt;0" class="caret"></span>
+    </a>
+    <!----><div data-ng-if="link.children.length&gt;0" ng-init="firstIndex = $index" ng-hide="link.numberOfchild&lt;1?true:false" class="dropdown-content top-menu-container">
+        <div class="container">
+            <!----><div class="row" ng-repeat="i in getRange(1, Math.ceil(link.children.length / 3))">
+                <!----><div class="col-sm-3" ng-repeat="j in getRange(i*3-3, i*3-1)" ng-init="sublink1=link.children[j]" ng-show="sublink1!=null">
+
+                    <div class="header-menu-left-list clearfix">
+                        <ul>
+                            <li><span class="header-menu-icon"><img src="/resources/files/icon/ICON-DEP-NHAT/uu-diem.png"></span>Ưu đãi tại MBBank</li>
+                            <!----><!----><li ng-repeat="sublink2 in sublink1.children1" ng-if="$index&lt;3">
+
+                                <a href="https://www.mbbank.com.vn/news/list/tin-khuyen-mai-khcn/52" ng-bind="sublink2.title">Tất cả ưu đãi</a>
+                            </li><!----><!---->
+                                <li ng-show="firstIndex==0" class="ng-hide"><a href="/26/1044/san-pham/uu-dai-tai-mbbank" class="link">Tất cả sản phẩm &gt;</a></li>
+
+                        </ul>
+                    </div>
+                </div><!----><div class="col-sm-3 ng-hide" ng-repeat="j in getRange(i*3-3, i*3-1)" ng-init="sublink1=link.children[j]" ng-show="sublink1!=null">
+
+                    <div class="header-menu-left-list clearfix">
+                        <ul>
+                            <li><span class="header-menu-icon"><img></span></li>
+                            <!---->
+                                <li ng-show="firstIndex==0" class="ng-hide"><a href="///san-pham/" class="link">Tất cả sản phẩm &gt;</a></li>
+
+                        </ul>
+                    </div>
+                </div><!----><div class="col-sm-3 ng-hide" ng-repeat="j in getRange(i*3-3, i*3-1)" ng-init="sublink1=link.children[j]" ng-show="sublink1!=null">
+
+                    <div class="header-menu-left-list clearfix">
+                        <ul>
+                            <li><span class="header-menu-icon"><img></span></li>
+                            <!---->
+                                <li ng-show="firstIndex==0" class="ng-hide"><a href="///san-pham/" class="link">Tất cả sản phẩm &gt;</a></li>
+
+                        </ul>
+                    </div>
+                </div><!---->
+                <div class="col-sm-3" ng-show="i==1">
+                    <div class="header-menu-left-list clearfix">
+                            <ul>
+                                <li>Hỗ trợ</li>
+                                <li><a style="color:#252525 !important" href="/Support">Trung tâm dịch vụ khách hàng 24/7</a></li>
+                            </ul>
+                    </div>
+                </div>
+            </div><!---->
+        </div>
+    </div><!---->
+</li><!---->
+                    </ul>
+                </div>
+            </div>
+            <div class="" style="z-index: 1">
+                <div class="header-right-btn-select clearfix">
+                    <div id="dv-btn-dbank" class="dropdown">
+                        <button class="header-btn-ib header-btn-150" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Ngân hàng số <i class="material-icons">account_balance</i><span class="caret"></span></button>
+                        <ul class="dropdown-header-btn-ib" aria-labelledby="dropdownMenu2">
+                            <li><a href="https://online.mbbank.com.vn"><i class="material-icons md-24">person</i>Cá nhân</a></li>
+                            <li><a href="https://ebank.mbbank.com.vn"><i class="material-icons">business</i>Doanh nghiệp</a></li>
+                        </ul>
+                    </div>
+                </div><!--END header-right-btn-select-->
+                <div class="header-right-search clearfix">
+                    <i class="material-icons md-24">search</i>
+                    <input type="text" ng-keypress="checkIfEnterKeyWasPressed($event)" ng-change="Search();" ng-model="selected" placeholder="Tìm kiếm..." id="txtSearch" class="header-right-search-input ng-pristine ng-untouched ng-valid ng-empty">
+                    <div class="search-results" id="resultSearch" style="display:none">
+                        <ul class="iwant-list">
+                            <!---->
+                        </ul>
+                    </div>
+                </div><!--END header-right-search-->
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/ng-template" id="SingupExperiencePopup">
+    <div class="modal-body singup-popup-body"  ng-class="{'sigup-priority':modeTemp == 2}">
+        <div class="singup-popup-left">
+            <div class="singup-popup-info-header">
+                <span class="popup-info-header-top" ng-show="modeTemp == 1">Tải biz ngay nhận quà liền tay</span>
+                <span class="popup-info-header-top" ng-show="modeTemp == 2">Tải App ngay nhận quà liền tay</span>
+                <span class="popup-info-header-bot">"Giao dịch mọi nơi thả ga"</span>
+            </div>
+            <div class="singup-popup-info-content">
+                <div class="img-scan">
+                    <div class="img">
+                        <img src="../../../../images/qr-code.png" ng-show="modeTemp == 1" width="174" height="174">
+                        <img src="../../../../images/pr-app.png" ng-show="modeTemp == 2" width="174" height="174">
+                    </div>
+                    <div class="singup-popup-info-btnscan">
+                        <span class="singup-btn-view">Scan để tải ứng dụng</span>
+                        <a href="https://mbbiz.onelink.me/6ezO/dangkytrainghiem" class="singup-btn-responsive">Bấm vào để tải ứng dụng</a>
+                    </div>
+                </div>
+                <div class="s-popup-content-or" ng-show="modeTemp == 1">
+                    <div class="arrow-right"></div>
+                    <span>hoặc</span>
+                    <div class="arrow-left"></div>
+
+                </div>
+                <div class="s-popup-content-url" ng-show="modeTemp == 1">Link truy cập BIZ MBBANK <a href="https://ebank.mbbank.com.vn">tại đây</a></div>
+            </div>
+            <div class="singup-popup-info-footer">
+                <img ng-show="modeTemp == 1" src="../../../../images/logoBIZ.png">
+                <img ng-show="modeTemp == 2" src="../../../../images/logoPriority.png">
+            </div>
+        </div>
+        <div class="singup-popup-right">
+            <!--Right Menus-->
+            <div ng-show="modeTemp == 2" class="close-priority">
+                <i class="material-icons md-24" ng-click="$close()">close</i>
+            </div>
+            <div class="detail-singup-popup" ng-cloak>
+                <form class="form-horizontal mb-wizard mb-form" name="frmSingupExperience" novalidate="novalidate">
+
+                    <ng-form name="formSingupExperiencePopup">
+                        <div class="singup-popup-header">
+                            <span class="singup-popup-title">
+                                Hãy để chúng tôi đồng hành cùng bạn
+                            </span>
+                            <i class="material-icons md-24" ng-show="modeTemp == 1" ng-click="$close()">close</i>
+                        </div>
+                        <div class="list-singup-popup">
+
+                            <div class="list-singup-popup-input item-popup-left" ng-show="modeTemp == 1">
+                                <label class="label-info-input">Tên công ty</label>
+                                <div class="input-text {{SingupExperienceFormPopup.fields[0].parent_class}}" ng-class="{'has-error' : formSingupExperiencePopup.{{SingupExperienceFormPopup.fields[0].name}}.$invalid }">
+                                    <input ng-change="{{SingupExperienceFormPopup.fields[0].onchange}}" type="{{ SingupExperienceFormPopup.fields[0].type }}" placeholder="{{SingupExperienceFormPopup.fields[0].placeholder}}" name="{{SingupExperienceFormPopup.fields[0].name}}" id="{{SingupExperienceFormPopup.fields[0].name}}" data-ng-model="SingupExperienceFormPopup.fields[0].data" ng-minlength={{SingupExperienceFormPopup.fields[0].min}} ng-maxlength={{SingupExperienceFormPopup.fields[0].max}} class="input-style-1 form-control" ng-required='SingupExperienceFormPopup.fields[0].required' ng-pattern='SingupExperienceFormPopup.fields[0].pattern' />
+                                    <span class="red" data-ng-show="{{'!formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[0].name+'.$valid && formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[0].name+'.$error.pattern'}} " ng-bind="SingupExperienceFormPopup.fields[0].patentext"></span>
+                                    <span class="red" data-ng-show="{{'formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[0].name+'.$dirty && formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[0].name+'.$error.required'}} " ng-bind="SingupExperienceFormPopup.fields[0].requiredtext">!</span>
+                                    <span class="red" data-ng-show="{{'!formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[0].name+'.required && (formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[0].name+'.$error.minlength || formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[0].name+'.$error.maxlength)' }} ">"{{SingupExperienceFormPopup.fields[0].labelvn}}" phải giữa {{SingupExperienceFormPopup.fields[0].min}} và {{SingupExperienceFormPopup.fields[0].max}} ký tự.</span>
+                                </div>
+                            </div>
+
+                            <div class="list-singup-popup-input item-popup-right" ng-show="modeTemp == 1">
+
+                                <label class="label-info-input">Mã số thuế</label>
+                                <div class="input-text {{SingupExperienceFormPopup.fields[1].parent_class}}" ng-class="{'has-error' : formSingupExperiencePopup.{{SingupExperienceFormPopup.fields[1].name}}.$invalid }">
+                                    <input type="{{ SingupExperienceFormPopup.fields[1].type }}" name="{{SingupExperienceFormPopup.fields[1].name}}" id="{{SingupExperienceFormPopup.fields[1].name}}" placeholder="{{SingupExperienceFormPopup.fields[1].placeholder}}" data-ng-model="SingupExperienceFormPopup.fields[1].data" ng-minlength={{SingupExperienceFormPopup.fields[1].min}} ng-maxlength={{SingupExperienceFormPopup.fields[1].max}} class="form-control inputformat input-style-1" ng-required='SingupExperienceFormPopup.fields[1].required' ng-pattern='SingupExperienceFormPopup.fields[1].pattern' />
+                                    <span class="red" data-ng-show="{{'formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[1].name+'.$dirty && formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[1].name+'.$error.required'}} " ng-bind="SingupExperienceFormPopup.fields[1].requiredtext">!</span>
+                                    <span class="red" data-ng-show="{{'!formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[1].name+'.required && (formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[1].name+'.$error.minlength || formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[1].name+'.$error.maxlength)' }} ">"{{SingupExperienceFormPopup.fields[1].labelvn}}" phải giữa {{SingupExperienceFormPopup.fields[1].min}} và {{SingupExperienceFormPopup.fields[1].max}} ký tự.</span>
+                                    <span class="red" data-ng-show="{{'!formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[1].name+'.$valid && formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[1].name+'.$error.pattern'}} " ng-bind="SingupExperienceFormPopup.fields[1].patentext"></span>
+                                </div>
+                            </div>
+
+                            <div class="list-singup-popup-input item-popup-left">
+                                <label class="label-info-input">Họ và tên  <span ng-show="modeTemp == 2">*</span></label>
+                                <div class="input-text {{SingupExperienceFormPopup.fields[2].parent_class}}" ng-class="{'has-error' : formSingupExperiencePopup.{{SingupExperienceFormPopup.fields[2].name}}.$invalid }">
+                                    <input type="{{ SingupExperienceFormPopup.fields[2].type }}" name="{{SingupExperienceFormPopup.fields[2].name}}" id="{{SingupExperienceFormPopup.fields[2].name}}" placeholder="{{SingupExperienceFormPopup.fields[2].placeholder}}" data-ng-model="SingupExperienceFormPopup.fields[2].data" ng-minlength={{SingupExperienceFormPopup.fields[2].min}} ng-maxlength={{SingupExperienceFormPopup.fields[2].max}} class="form-control inputformat input-style-1" ng-required='SingupExperienceFormPopup.fields[2].required' ng-pattern='SingupExperienceFormPopup.fields[2].pattern' />
+                                    <span class="red" data-ng-show="{{'formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[2].name+'.$dirty && formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[2].name+'.$error.required'}} " ng-bind="SingupExperienceFormPopup.fields[2].requiredtext">!</span>
+                                    <span class="red" data-ng-show="{{'!formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[2].name+'.required && (formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[2].name+'.$error.minlength || formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[2].name+'.$error.maxlength)' }} ">"{{SingupExperienceFormPopup.fields[2].labelvn}}" phải giữa {{SingupExperienceFormPopup.fields[2].min}} và {{SingupExperienceFormPopup.fields[2].max}} ký tự.</span>
+                                    <span class="red" data-ng-show="{{'!formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[2].name+'.$valid && formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[2].name+'.$error.pattern'}} " ng-bind="SingupExperienceFormPopup.fields[2].patentext"></span>
+                                </div>
+                            </div>
+
+                            <div class="list-singup-popup-input item-popup-right">
+                                <label class="label-info-input">Email</label>
+                                <div class="input-text {{SingupExperienceFormPopup.fields[3].parent_class}}" ng-class="{'has-error' : formSingupExperiencePopup.{{SingupExperienceFormPopup.fields[3].name}}.$invalid }">
+                                    <input type="{{ SingupExperienceFormPopup.fields[3].type }}" name="{{SingupExperienceFormPopup.fields[3].name}}" id="{{SingupExperienceFormPopup.fields[3].name}}" placeholder="{{SingupExperienceFormPopup.fields[3].placeholder}}" data-ng-model="SingupExperienceFormPopup.fields[3].data" ng-minlength={{SingupExperienceFormPopup.fields[3].min}} ng-maxlength={{SingupExperienceFormPopup.fields[3].max}} class="form-control inputformat input-style-1" ng-required='SingupExperienceFormPopup.fields[3].required' ng-pattern='SingupExperienceFormPopup.fields[3].pattern' />
+                                    <span class="red" data-ng-show="{{'formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[3].name+'.$dirty && formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[3].name+'.$error.required'}} " ng-bind="SingupExperienceFormPopup.fields[3].requiredtext">!</span>
+                                    <span class="red" data-ng-show="{{'!formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[3].name+'.required && (formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[3].name+'.$error.minlength || formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[3].name+'.$error.maxlength)' }} ">"{{SingupExperienceFormPopup.fields[3].labelvn}}" phải giữa {{SingupExperienceFormPopup.fields[3].min}} và {{SingupExperienceFormPopup.fields[3].max}} ký tự.</span>
+                                    <span class="red" data-ng-show="{{'!formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[3].name+'.$valid && formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[3].name+'.$error.pattern'}} " ng-bind="SingupExperienceFormPopup.fields[3].patentext"></span>
+                                </div>
+                            </div>
+
+                            <div class="list-singup-popup-input item-popup-left">
+                                <label class="label-info-input">Số điện thoại <span>*</span></label>
+                                <div class="input-text {{SingupExperienceFormPopup.fields[4].parent_class}}" ng-class="{'has-error' : formSingupExperiencePopup.{{SingupExperienceFormPopup.fields[4].name}}.$invalid }">
+                                    <input type="{{ SingupExperienceFormPopup.fields[4].type }}" name="{{SingupExperienceFormPopup.fields[4].name}}" id="{{SingupExperienceFormPopup.fields[4].name}}" placeholder="{{SingupExperienceFormPopup.fields[4].placeholder}}" data-ng-model="SingupExperienceFormPopup.fields[4].data" ng-minlength={{SingupExperienceFormPopup.fields[4].min}} ng-maxlength={{SingupExperienceFormPopup.fields[4].max}} class="form-control inputformat input-style-1" ng-required='SingupExperienceFormPopup.fields[4].required' ng-pattern='SingupExperienceFormPopup.fields[4].pattern' />
+                                    <span class="red" data-ng-show="{{'formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[4].name+'.$dirty && formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[4].name+'.$error.required'}} " ng-bind="SingupExperienceFormPopup.fields[4].requiredtext">!</span>
+                                    <span class="red" data-ng-show="{{'!formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[4].name+'.required && (formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[4].name+'.$error.minlength || formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[4].name+'.$error.maxlength)' }} ">"{{SingupExperienceFormPopup.fields[4].labelvn}}" phải nhập {{SingupExperienceFormPopup.fields[4].max}} ký tự.</span>
+                                    <span class="red" data-ng-show="{{'!formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[4].name+'.$valid && formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[4].name+'.$error.pattern'}} " ng-bind="SingupExperienceFormPopup.fields[4].patentext"></span>
+                                </div>
+                            </div>
+
+                            <div class="list-singup-popup-input item-popup-right">
+                                <label class="label-info-input">Lĩnh vực quan tâm</label>
+                                <div class="input-text">
+                                    <select name="{{SingupExperienceFormPopup.fields[5].name}}" id="{{SingupExperienceFormPopup.fields[5].name}}" class="dropdown-ctrl form-control" ng-change="{{SingupExperienceFormPopup.fields[5].onchange}}" data-ng-model="SingupExperienceFormPopup.fields[5].data" ng-options="option.id as option.name for option in AreasData" ng-required='SingupExperienceFormPopup.fields[5].required'>
+                                        <option value="">Nhập lĩnh vực quan tâm</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="list-singup-popup-input popup-other" ng-show="SingupExperienceFormPopup.fields[5].data == 'Khác'">
+
+                                <label class="label-info-input">Khác</label>
+                                <div class="input-text {{SingupExperienceFormPopup.fields[6].parent_class}}" ng-class="{'has-error' : formSingupExperiencePopup.{{SingupExperienceFormPopup.fields[6].name}}.$invalid }">
+                                    <input type="{{ SingupExperienceFormPopup.fields[6].type }}" name="{{SingupExperienceFormPopup.fields[6].name}}" id="{{SingupExperienceFormPopup.fields[6].name}}" placeholder="{{SingupExperienceFormPopup.fields[6].placeholder}}" data-ng-model="SingupExperienceFormPopup.fields[6].data" ng-minlength={{SingupExperienceFormPopup.fields[6].min}} ng-maxlength={{SingupExperienceFormPopup.fields[6].max}} class="form-control inputformat input-style-1" ng-required='SingupExperienceFormPopup.fields[6].required' ng-pattern='SingupExperienceFormPopup.fields[6].pattern' />
+                                    <span class="red" data-ng-show="{{'formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[6].name+'.$dirty && formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[6].name+'.$error.required'}} " ng-bind="SingupExperienceFormPopup.fields[6].requiredtext">!</span>
+                                    <span class="red" data-ng-show="{{'!formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[6].name+'.required && (formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[6].name+'.$error.minlength || formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[6].name+'.$error.maxlength)' }} ">"{{SingupExperienceFormPopup.fields[6].labelvn}}" phải giữa {{SingupExperienceFormPopup.fields[6].min}} và {{SingupExperienceFormPopup.fields[6].max}} ký tự.</span>
+                                    <span class="red" data-ng-show="{{'!formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[6].name+'.$valid && formSingupExperiencePopup.'+SingupExperienceFormPopup.fields[6].name+'.$error.pattern'}} " ng-bind="SingupExperienceFormPopup.fields[6].patentext"></span>
+                                </div>
+                            </div>
+
+                            <div class="list-singup-popup-input item-popup-left capcha-responsive">
+                                <label class="label-info-input">Mã xác thực</label>
+                                <div ng-class="{'has-error' : formSingupExperiencePopup.{{SingupExperienceFormPopup.fields[7].name}}.$invalid }">
+                                    <input placeholder="{{ SingupExperienceFormPopup.fields[7].placeholder}}" type="{{ SingupExperienceFormPopup.fields[7].type }}" dynamic-name="SingupExperienceFormPopup.fields[7].name" id="txtCapchaSingupExperienceFormPopup" maxlength="{{SingupExperienceFormPopup.fields[7].max}}" data-ng-model="SingupExperienceFormPopup.fields[7].data" ng-minlength={{SingupExperienceFormPopup.fields[7].min}} ng-maxlength={{SingupExperienceFormPopup.fields[7].max}} class="form-control input-style-1" data-ng-pattern="InvestCardDetail.fields[7].pattern" ng-required='SingupExperienceFormPopup.fields[7].required' ng-pattern='SingupExperienceFormPopup.fields[7].pattern' />
+                                </div>
+                            </div>
+                            <div class="list-singup-popup-input capcha-ex">
+                                <div class="captcha-view">
+                                    <div class="capcha-image">
+                                        <img title="Nhấn vào ảnh để hiển thị captcha mới" id="CaptchaSingupExperiencePopup" src="/Captcha/Index?id=ProductExp" />
+                                    </div>
+                                    <div class="reload-capcha" onclick="ReloadCaptcha('CaptchaSingupExperiencePopup', 'ProductExp');">
+                                        
+                                        <i class="material-icons">autorenew</i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="singup-popup-footer">
+                            <button ng-class="{'disabled':formSingupExperiencePopup.$invalid}" ng-click="!formSingupExperiencePopup.$invalid ? SingupExperiencePopupData(formSingupExperiencePopup):'';" class="btn-singup-ex">Đăng ký ngay</button>
+                        </div>
+                    </ng-form>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script type="text/ng-template" id="ShowResult">
+        <div class="modal-header singup-experience-modal-header">
+            <div class="singup-experience-image">
+                <img src="../../../../images/success.png" width="100" height="100">
+            </div>
+            <i class="material-icons md-24" ng-click="$close()">close</i>
+        </div>
+        <div class="modal-body singup-experience-modal-body">
+            <span class="title">{{title}}</span>
+            <span class="message">{{message}}</span>
+        </div>
+        <div class="modal-footer singup-experience-modal-footer">
+            <button class="btn btn-primary" ng-click="$close()">Xác nhận</button>
+        </div>
+    </script>
+    <script type="text/ng-template" id="loader-template">
+        <div class="modal-body text-center" id="loader" ng-show="true">
+            <i class="fa fa-spin fa-spinner fa-2x"></i>
+        </div>
+    </script>
+    <script type="text/ng-template" id="contact-err">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="fa fa-times-circle text-danger "></i> {{ title}}</h3>
+        </div>
+        <div class="modal-body">
+            {{message}}
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="$close()">Ok</button>
+        </div>
+    </script>
+
+<script type="text/ng-template" id="menu-dropdown.html">
+
+    <a href="/{{link.parent_id}}/{{link.id}}/san-pham/{{link.alias}}" class="dropdown-toggle" style="z-index: 1;">
+        {{link.title}} <span ng-show="link.children.length>0" class="caret"></span>
+    </a>
+    <div data-ng-if="link.children.length>0" ng-init="firstIndex = $index" ng-hide="link.numberOfchild<1?true:false" class="dropdown-content top-menu-container">
+        <div class="container">
+            <div class="row" ng-repeat="i in getRange(1, Math.ceil(link.children.length / 3))">
+                <div class="col-sm-3" ng-repeat='j in getRange(i*3-3, i*3-1)' ng-init="sublink1=link.children[j]"
+                     ng-show="sublink1!=null">
+
+                    <div class="header-menu-left-list clearfix">
+                        <ul>
+                            <li><span class="header-menu-icon"><img src="{{sublink1.icon_small}}"></span>{{sublink1.title}}</li>
+                            <li ng-repeat='sublink2 in sublink1.children1' ng-if="$index<3">
+
+                                <a href="{{sublink2.link}}" ng-bind="sublink2.title"></a>
+                            </li>
+                                <li ng-show="firstIndex==0"><a href="/{{sublink1.parent_id}}/{{sublink1.id}}/san-pham/{{sublink1.alias}}" class="link">Tất cả sản phẩm ></a></li>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-3" ng-show="i==1">
+                    <div class="header-menu-left-list clearfix">
+                            <ul>
+                                <li>Hỗ trợ</li>
+                                <li><a style="color:#252525 !important" href="/Support">Trung tâm dịch vụ khách hàng 24/7</a></li>
+                            </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/ng-template" id="menu-single.html">
+    <a href="/{{link.parent_id}}/{{link.id}}/san-pham/{{link.alias}}">{{link.title}}</a>
+</script>
+<script type="text/ng-template" id="singup-popup.html">
+    <span class="singup-ex-link" ng-click="showSingupExperienceForm(link.alias)">
+        <p class="sigup-menu-title">{{link.title}}</p>
+        <p class="sigup-menu-responsive">ĐK trải nghiệm</p>
+    </span>
+</script>
+<script>
+    $("#dv-btn-dbank").hover(function () {
+        $(this).addClass('open');
+    }, function () {
+        $(this).removeClass('open');
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        var language = getUrlParameter('lang', window.location.href);
+        if (typeof language == "undefined") {
+            $(".header-btn-ib").addClass("header-btn-150")
+        } else {
+            if (language != "EN") {
+                $(".header-btn-ib").addClass("header-btn-150")
+            } else {
+                $(".header-btn-ib").addClass("header-btn-180")
+            }
+        }
+
+    });
+
+    function getUrlParameter(param, dummyPath) {
+        var sPageURL = dummyPath || window.location.search.substring(1),
+            sURLVariables = sPageURL.split(/[&||?]/),
+            res;
+
+        for (var i = 0; i < sURLVariables.length; i += 1) {
+            var paramName = sURLVariables[i];
+            sParameterName = (paramName || '').split('=');
+
+            if (sParameterName[0] === param) {
+                var paramValue = '';
+                for (var i = 1; i < sParameterName.length; i++) {
+                    if (sParameterName[i] == '') {
+                        sParameterName[i] = '=';
+                    }
+                    paramValue = paramValue + sParameterName[i];
+                }
+                res = paramValue;
+            }
+        }
+
+        return res;
+    }
+</script>
+
+
+
+
+<script src="/Angular/Controllers/MenuheaderProductController.js"></script>
+<div class="mb-detail-banner ">
+    <div class="mb-detail-banner-img">
+<img src="/resources/files/Ty-gia/ty-gia-mbbank.png" debug="0.noHasMenu | md.img_slide/resources/files/Ty-gia/ty-gia-mbbank.png">
+    </div>
+    
+   
+        <div class="mb-detail-nav clearfix" ng-controller="menuHeaderOthers">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <ul>
+                            <!---->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div><!--END mb-detail-banner-->    
+
+
+
+
+<script src="/Angular/Controllers/ExchangeRateController.js"></script>
+<script src="/Scripts/Calculator.js"></script>
+
+<div class="detail-container" ng-controller="ctrlExchangeRate">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="detail-cate-tit">
+                    <h1>Chuyển đổi đơn vị tiền tệ</h1>
+                </div>
+            </div>
+        </div>
+        <div class="link-fee-content">
+            <div class="links-rate-value">
+                <div class="row">
+                       
+                    <div class="col-sm-1 col-sm-offset-2  col-xs-6">
+                       <div style="padding-top:10px"><b>Nếu tôi có</b></div> 
+                        </div>
+                        <div class="col-sm-4 col-xs-6">
+                            <div class="money-value-input">
+                            <input type="text" class="ctr-blue inputformat ng-pristine ng-untouched ng-valid ng-not-empty" placeholder="Nhập mệnh giá quy đổi" step="1000000" min="0" ng-model="money" value="0">
+                            </div>
+                        </div>
+                    <div class="col-sm-2 col-xs-6">
+                        <div class="money-value-select">
+                            <div class="dropdown">
+                                <select class="form-control dropdown-ctrl ng-pristine ng-untouched ng-valid ng-not-empty" ng-model="CurrencyCode">
+                                    <option value="VND">VND</option>
+                                    <option value="USD">USD</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="col-sm-1 col-xs-6">
+                            <a href="#" class="btn-flat-style2" ng-click="CreateExchange()">Quy đổi</a>
+                        </div>
+                        <div class="col-sm-1 col-xs-6">
+                            <div style="padding-top:10px"><b>Tôi sẽ có</b></div>
+                            
+                        </div>
+                    </div>
+            </div>
+            <div class="money-list-nation">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="listcountry">
+                            <div class="row">
+                                <!---->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="money-list-date">
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="money-list-date-calendar">
+                        <a href="#"><i class="material-icons ng-pristine ng-untouched ng-valid ng-not-empty ng-valid-date" datetime-picker="" ng-model="myDate">insert_invitation</i><span datetime-picker="" ng-model="myDate" ng-bind="myDate | date:'dd/MM/yyyy'" class="ng-pristine ng-untouched ng-valid ng-not-empty ng-valid-date">15/07/2026</span></a>
+                    </div>
+                </div>
+
+                <div class="col-sm-7">
+                    <div class="money-list-date-btn">
+                        <a href="#" ng-click="PrevDate();"><i class="material-icons md-24">chevron_left</i>Hôm trước</a>
+                        <a href="#" ng-click="NextDate();">Hôm sau<i class="material-icons md-24">chevron_right</i></a>
+                    </div>
+                </div>
+            </div><!--END row-->
+        </div>
+        <div class="money-date-tbl">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-fee">
+                        <thead>
+                            <tr>
+                                <th style="width:20%">Ngoại tệ</th>
+                                <th style="width:20%">Mua vào <span>(tiền mặt)</span></th>
+                                <th style="width:20%">Mua vào <span>(Chuyển khoản)</span></th>
+                                <th style="width:20%">Bán ra (Tiền mặt)</th>
+                                <th style="width:20%">Bán ra (Chuyển khoản)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!----><tr ng-repeat="x in myData.lst">
+                                <td>USD (USD 50-100)</td>
+                                <td> 26,050.00</td>
+                                <td> 26,065.00</td>
+                                <td> 26,464.00</td>
+                                <td> 26,454.00</td>
+                            </tr><!----><tr ng-repeat="x in myData.lst">
+                                <td>USD (USD 5 - 20)</td>
+                                <td> 26,030.00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr><!----><tr ng-repeat="x in myData.lst">
+                                <td>SJC</td>
+                                <td> 14,550,000.00</td>
+                                <td> 14,550,000.00</td>
+                                <td> 14,850,000.00</td>
+                                <td> 14,850,000.00</td>
+                            </tr><!----><tr ng-repeat="x in myData.lst">
+                                <td>USD (Dưới 5 USD)</td>
+                                <td> 26,010.00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr><!----><tr ng-repeat="x in myData.lst">
+                                <td>EUR</td>
+                                <td> 29,431.00</td>
+                                <td> 29,481.00</td>
+                                <td> 30,840.00</td>
+                                <td> 30,840.00</td>
+                            </tr><!----><tr ng-repeat="x in myData.lst">
+                                <td>GBP</td>
+                                <td> 34,663.00</td>
+                                <td> 34,763.00</td>
+                                <td> 35,793.00</td>
+                                <td> 35,793.00</td>
+                            </tr><!----><tr ng-repeat="x in myData.lst">
+                                <td>JPY</td>
+                                <td> 157.09</td>
+                                <td> 158.09</td>
+                                <td> 167.07</td>
+                                <td> 167.07</td>
+                            </tr><!----><tr ng-repeat="x in myData.lst">
+                                <td>HKD</td>
+                                <td> 3,276.00</td>
+                                <td> 3,286.00</td>
+                                <td> 3,452.00</td>
+                                <td> 3,452.00</td>
+                            </tr><!----><tr ng-repeat="x in myData.lst">
+                                <td>CNY</td>
+                                <td>-</td>
+                                <td> 3,841.34</td>
+                                <td> 3,963.78</td>
+                                <td> 3,963.78</td>
+                            </tr><!----><tr ng-repeat="x in myData.lst">
+                                <td>AUD</td>
+                                <td> 17,962.00</td>
+                                <td> 18,012.00</td>
+                                <td> 18,739.00</td>
+                                <td> 18,709.00</td>
+                            </tr><!----><tr ng-repeat="x in myData.lst">
+                                <td>NZD</td>
+                                <td>-</td>
+                                <td> 15,041.00</td>
+                                <td>-</td>
+                                <td> 15,742.00</td>
+                            </tr><!----><tr ng-repeat="x in myData.lst">
+                                <td>CAD</td>
+                                <td> 18,347.00</td>
+                                <td> 18,447.00</td>
+                                <td> 19,092.00</td>
+                                <td> 19,092.00</td>
+                            </tr><!----><tr ng-repeat="x in myData.lst">
+                                <td>SGD</td>
+                                <td> 20,062.00</td>
+                                <td> 20,052.00</td>
+                                <td> 20,748.00</td>
+                                <td> 20,748.00</td>
+                            </tr><!----><tr ng-repeat="x in myData.lst">
+                                <td>THB</td>
+                                <td> 754.81</td>
+                                <td> 764.81</td>
+                                <td> 815.69</td>
+                                <td> 815.69</td>
+                            </tr><!----><tr ng-repeat="x in myData.lst">
+                                <td>CHF</td>
+                                <td> 32,027.00</td>
+                                <td> 32,127.00</td>
+                                <td> 33,172.00</td>
+                                <td> 33,172.00</td>
+                            </tr><!----><tr ng-repeat="x in myData.lst">
+                                <td>KRW</td>
+                                <td>-</td>
+                                <td> 14.94</td>
+                                <td>-</td>
+                                <td> 21.34</td>
+                            </tr><!----><tr ng-repeat="x in myData.lst">
+                                <td>LAK</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr><!----><tr ng-repeat="x in myData.lst">
+                                <td>KHR</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr><!----><tr ng-repeat="x in myData.lst">
+                                <td>SEK</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr><!---->
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+    <script>
+        $(".header-page").attr("style", "background:url('/resources/files/Ty-gia/ty-gia-mbbank.png')");
+    </script>
+
+    <script>
+        $(".header-text").html('Tỷ gi&#225;');
+    </script>
+
+
+
+<div class="footer-service">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="footer-cate-title">
+                    <h2>Trung tâm dịch vụ khách hàng 24/7</h2>
+                    <!--Khánh Phạm Quốc - khanhd5320 - Fix bug bypass captcha-->
+                </div>
+            </div>
+        </div><!--END row-->
+
+        <div class="footer-service-list clearfix">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="footer-service-icon">
+                        <i class="material-icons md-36">call</i>
+                    </div>
+                    <div class="footer-service-info">
+                        <span class="wow slideInLeft">Hotline</span>
+                        <p class="wow slideInLeft" data-wow-delay="0.1s">1900 545426 <br>(84-24)3767 4050 (quốc tế gọi về)</p>
+                        <a class="wow slideInLeft" data-wow-delay="0.1s" target="_blank" href="https://mbbank.com.vn/resources/files/Tin-MB/2026/huong-dan-su-dung-tong-dai-mb-2026.pdf">Hướng dẫn sử dụng Tổng đài (Tại đây)</a>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="footer-service-icon">
+                        <i class="material-icons md-36">email</i>
+                    </div>
+                    <div class="footer-service-info">
+                        <span class="wow slideInLeft">Email cho chúng tôi</span>
+                        <a class="wow slideInLeft" data-wow-delay="0.1s" href="/Contact">mb247@mbbank.com.vn</a>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                        <div class="footer-service-icon">
+                            <i class="material-icons md-36">language</i>
+                        </div>
+                        <div class="footer-service-info">
+                            <span class="wow slideInLeft"><b>Liên hệ MB247<b></b></b></span><b><b>
+                            <a class="wow slideInLeft" data-wow-delay="0.1s" href="/Contact">https://www.mbbank.com.vn/Contact</a>
+                        </b></b></div><b><b>
+                </b></b></div><b><b>
+            </b></b></div><!--END row--><b><b>
+        </b></b></div><!--END footer-service-list--><b><b>
+    </b></b></div><!--END container--><b><b>
+</b></b></div><!--END footer-service--><b><b>
+
+<div class="footer-menu" ng-controller="menuFooter">
+    <div class="container">
+        <div class="row">
+            <!----><div class="col-sm-3" ng-repeat="x in myData">
+                <span class="footer-menu-tit" ng-bind="x.title">Sản phẩm</span>
+                <ul class="footer-menu-list">
+                    <!----><li ng-repeat="sub in x.children"><a href="/26/265/265/san-pham-all/ngan-hang-so-2018-8-13-16-31-5" ng-bind="sub.title">Ngân hàng số khách hàng cá nhân</a></li><!----><li ng-repeat="sub in x.children"><a href="/26/28/28/san-pham-all/tien-gui" ng-bind="sub.title">Tiền gửi</a></li><!----><li ng-repeat="sub in x.children"><a href="/26/36/36/san-pham-all/cho-vay" ng-bind="sub.title">Cho vay khách hàng cá nhân</a></li><!----><li ng-repeat="sub in x.children"><a href="/26/46/46/san-pham-all/dich-vu-the" ng-bind="sub.title">Dịch vụ thẻ</a></li><!----><li ng-repeat="sub in x.children"><a href="/26/98/98/san-pham-all/chuyen-tien-thanh-toan" ng-bind="sub.title">Chuyển tiền, thanh toán khách hàng cá nhân</a></li><!----><li ng-repeat="sub in x.children"><a href="/26/157/157/san-pham-all/dich-vu-khac-2018-8-14-16-17-11" ng-bind="sub.title">Dịch vụ khác cho khách hàng cá nhân</a></li><!----><li ng-repeat="sub in x.children"><a href="/26/1163/1163/san-pham-all/27-bao-hiem-nhan-tho" ng-bind="sub.title">Bảo hiểm nhân thọ cho khách hàng cá nhân</a></li><!---->
+                </ul>
+            </div><!----><div class="col-sm-3" ng-repeat="x in myData">
+                <span class="footer-menu-tit" ng-bind="x.title">Công cụ</span>
+                <ul class="footer-menu-list">
+                    <!----><li ng-repeat="sub in x.children"><a href="documents" ng-bind="sub.title">Tài liệu biểu mẫu</a></li><!----><li ng-repeat="sub in x.children"><a href="http://mbbank.com.vn" ng-bind="sub.title">Công cụ tính toán</a></li><!----><li ng-repeat="sub in x.children"><a href="/CheckSavingAccount/Index" ng-bind="sub.title">Tra cứu</a></li><!---->
+                </ul>
+            </div><!----><div class="col-sm-3" ng-repeat="x in myData">
+                <span class="footer-menu-tit" ng-bind="x.title">Ưu đãi</span>
+                <ul class="footer-menu-list">
+                    <!----><li ng-repeat="sub in x.children"><a href="https://www.mbbank.com.vn/26/1044/2383/san-pham-all/the%CC%89-mb-chi-tieu-gia%CC%89m-gia%CC%81-hang-dau-viet-nam-2024-7-4-16-58-2" ng-bind="sub.title">Ưu đãi tại MBBank</a></li><!---->
+                </ul>
+            </div><!---->
+            <a href="https://div.gov.vn/"><img src="/images/cert-digital.png"></a>
+            
+        </div><!--END row-->
+    </div><!--END container-->
+</div><!--END footer-menu-->
+
+    ﻿<div class="footer-copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <span class="footer-text-copyright">Bản quyền © 2026 thuộc về Ngân hàng Quân đội. Bảo lưu mọi quyền.</span>
+            </div>
+            <div class="col-sm-6">
+                <ul class="footer-rule clearfix">
+                    <li><a href="https://www.mbbank.com.vn/Documents/">Điều khoản sử dụng</a></li>
+                    <li><a href="https://www.mbbank.com.vn/chi-tiet/tin-kinh-te/chinh-sach-bao-mat-2024-7-31-11-28-18/4471">An toàn bảo mật</a></li>
+                    <li><a class="footer-social" href="https://www.facebook.com/VietnamMBBank" target="_blank"><img src="/images/f_icon_fb.png">Kết nối với chúng tôi</a></li>
+                </ul>
+            </div>
+        </div><!--END row-->
+    </div><!--END container-->
+</div>
+
+
+<style>
+    .material-icons-custom{
+    width: 24px;
+    word-wrap: normal;
+    margin-left: 2px;
+    padding-right: 4px;
+    margin-right: 10px;
+    position:relative;
+    bottom:2px;
+    }
+</style>
+<div class="quicknav" id="quicknav">
+    <a href="/maps/"><i class="material-icons">place</i><span>Mạng lưới</span></a>
+    <a href="/ExchangeRate"><i class="material-icons md-24">monetization_on</i><span>Tỷ giá</span></a>
+    <a href="/CurrencyExchange"><i class="material-icons md-24">account_balance</i><span>Chi trả kiều hối</span></a>
+    
+    
+    <a href="/Fee"><img class="material-icons-custom" src="/images/icons/icon_percent.png"><span>Lãi suất</span></a>
+</div>
+<script src="/Scripts/Customs/color-default.js"></script>
+<script>
+    var colorDefaultController = new colorDefaultController();
+    colorDefaultController.initialize();
+</script>
+
+
+    <!-- CuongDo: Hiển thị chế độ xem trước -->
+    <div id="pageloaddiv" style="display: none;">
+        <div id="datatable-server_processing" class="dataTables_processing">Chế độ xem trước</div>
+    </div>
+
+<script src="/bundles/CustomjsVS2?v=sJVxlt8WXvB0co_I7C5tqdyRj1fk0AO3shrH91XvgYc1"></script>
+
+
+
+<script>
+    if (alias == 'doanh-nghiep' || parent_id == '50' || parent_id == "836") {
+        $("#BODY").attr('class', '');
+        $("#BODY").addClass("corp");
+    }
+    else if (alias == 'ca-nhan-cao-cap' || parent_id == '77') {
+        $("#BODY").attr('class', '');
+        $("#BODY").addClass("mb-vip");
+    }
+    else { $("#BODY").attr('class', ''); }
+
+    var referrer = document.referrer;
+    //var host = referrer[0]; return abc.com
+    if (referrer && referrer.split('://')[1].split('/')[0] == configreferrer) {
+        $("#pageloaddiv").show();
+    }
+</script>
+<script>
+    var referrer = document.referrer;
+    //var host = referrer[0]; return abc.com
+    if (referrer && referrer.split('://')[1].split('/')[0] == configreferrer) {
+        $("#pageloaddiv").show();
+    }
+    $(document).ready(function () {
+        JCommonUtils.registerDatepicker();
+        JScriptRoles.register();
+    });
+
+</script>
+<script>
+    function myFunction() {
+        var x = document.getElementById("myTopnav");
+
+        if (x.className === "topnav") {
+            x.className += " responsive";
+        } else {
+            x.className = "topnav";
+        }
+    }
+
+</script>
+<script>
+    function ReloadCaptcha(id, key) {
+        var d = new Date();
+        $("#" + id).attr("src", "/Captcha/Index?id=" + key + "&t=" + d.getTime());
+        $.ajax({
+            url: '/forgery/UpdateAntiForgeryToken/a/b/c/d/f/g',
+            success: function (data) {
+                // console.log(data);
+                $("#AntiForgeyToken").html(data);
+            }
+        });
+    }
+</script></b></b>
+<script type="text/javascript" id="" charset="">!function(b,e,f,g,a,c,d){b.fbq||(a=b.fbq=function(){a.callMethod?a.callMethod.apply(a,arguments):a.queue.push(arguments)},b._fbq||(b._fbq=a),a.push=a,a.loaded=!0,a.version="2.0",a.queue=[],c=e.createElement(f),c.async=!0,c.src=g,d=e.getElementsByTagName(f)[0],d.parentNode.insertBefore(c,d))}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","565422826203429");fbq("set","agent","tmgoogletagmanager","565422826203429");fbq("track","PageView");</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=565422826203429&amp;ev=PageView&amp;noscript=1"></noscript>
+
+<script type="text/javascript" id="" charset="">!function(b,e,f,g,a,c,d){b.fbq||(a=b.fbq=function(){a.callMethod?a.callMethod.apply(a,arguments):a.queue.push(arguments)},b._fbq||(b._fbq=a),a.push=a,a.loaded=!0,a.version="2.0",a.queue=[],c=e.createElement(f),c.async=!0,c.src=g,d=e.getElementsByTagName(f)[0],d.parentNode.insertBefore(c,d))}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","565422826203429");fbq("set","agent","tmgoogletagmanager","565422826203429");fbq("track","PageView");</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=565422826203429&amp;ev=PageView&amp;noscript=1"></noscript>
+<script type="text/javascript" id="" charset="">(function(){var a=document.createElement("meta");a.name="google-site-verification";a.content="QsMVP-96l4uzSVSRtIcZ2BsCUfV8p-GlRZZlx7QW-5g";document.getElementsByTagName("head")[0].appendChild(a)})();</script>
+
+<script type="text/javascript" id="" charset="">!function(b,e,f,g,a,c,d){b.fbq||(a=b.fbq=function(){a.callMethod?a.callMethod.apply(a,arguments):a.queue.push(arguments)},b._fbq||(b._fbq=a),a.push=a,a.loaded=!0,a.version="2.0",a.queue=[],c=e.createElement(f),c.async=!0,c.src=g,d=e.getElementsByTagName(f)[0],d.parentNode.insertBefore(c,d))}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","1957225238459365");fbq("track","PageView");</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1957225238459365&amp;ev=PageView&amp;noscript=1"></noscript>
+
+                <script type="text/javascript" id="" charset="">(function(a,b,d,c,e){a[c]=a[c]||[];a[c].push({"atm.start":(new Date).getTime(),event:"atm.js"});a=b.getElementsByTagName(d)[0];b=b.createElement(d);b.async=!0;b.src="//deqik.com/tag/corejs/"+e+".js";a.parentNode.insertBefore(b,a)})(window,document,"script","atmDataLayer","ATMCRQF6GQGRF");</script>
+                
+<script type="text/javascript" id="" charset="">!function(d,g,e){d.TiktokAnalyticsObject=e;var a=d[e]=d[e]||[];a.methods="page track identify instances debug on off once ready alias group enableCookie disableCookie holdConsent revokeConsent grantConsent".split(" ");a.setAndDefer=function(b,c){b[c]=function(){b.push([c].concat(Array.prototype.slice.call(arguments,0)))}};for(d=0;d<a.methods.length;d++)a.setAndDefer(a,a.methods[d]);a.instance=function(b){b=a._i[b]||[];for(var c=0;c<a.methods.length;c++)a.setAndDefer(b,a.methods[c]);return b};a.load=
+function(b,c){var f="https://analytics.tiktok.com/i18n/pixel/events.js";a._i=a._i||{};a._i[b]=[];a._i[b]._u=f;a._t=a._t||{};a._t[b]=+new Date;a._o=a._o||{};a._o[b]=c||{};c=document.createElement("script");c.type="text/javascript";c.async=!0;c.src=f+"?sdkid\x3d"+b+"\x26lib\x3d"+e;b=document.getElementsByTagName("script")[0];b.parentNode.insertBefore(c,b)};a.load("D41DE1BC77UFH42QUR80");a.page()}(window,document,"ttq");</script>
+<div style="position: absolute; bottom: 0px; left: 0px; width: 1px; height: 1px; overflow: hidden; visibility: hidden;"><iframe src="https://lg1.logging.admicro.vn/_tracking1.gif?dg=016a5453f85f9e449a1b8ea3784d180e&amp;fl=-1.-1.&amp;je=0&amp;sr=1280x800&amp;sc=24&amp;hn=mbbank.com.vn&amp;cat=&amp;g=0&amp;i=s%3B1784099246997%3B0%3B0%3B1%3B0%3B0%3B150x668%3B0%3B0%3B8e03eb1c0372e67adfbaf80294b64f03%3B016a5453f85f9e449a1b8ea3784d180e%3BGA1.1.1352227396.1783911416%3B-1784099229202%3B94%3B491%3B7190%3B2%3B2%3B14407%3B14407&amp;rdm=0.5018728853286538&amp;p=%2FExchangeRate&amp;r=&amp;ce=1&amp;lc=4&amp;cr=1783911419&amp;ui=4039114163232241376&amp;dg=016a5453f85f9e449a1b8ea3784d180e" name="admIframeTracking" id="admIframeTracking" style="width: 12px; height: 12px; visibility: hidden; position: absolute; left: 0px; bottom: 0px; border-width: medium; border-style: none; border-color: currentcolor; border-image: none;"></iframe></div></body>
