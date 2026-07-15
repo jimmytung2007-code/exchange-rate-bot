@@ -27,6 +27,11 @@ TARGET_CURRENCIES_VCB = ['USD', 'EUR', 'JPY', 'SGD', 'GBP', 'CNY']
 BANKS_ORDER = ['TCB', 'EXIM', 'BIDV', 'VCB', 'VTB', 'AGRI', 'MBB', 'ACB', 'SACOM']
 CURRENCIES = ['USD', 'EUR', 'JPY', 'SGD', 'GBP', 'CNY']
 
+STEALTH_UA = (
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+    '(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
+)
+
 
 def format_rate_value(code, raw_text):
     """Chuan hoa chuoi so ve dinh dang: comma phan cach nghin, dau cham la thap phan.
@@ -171,10 +176,7 @@ async def scrape_vcb():
                     args=['--disable-blink-features=AutomationControlled']
                 )
                 context = await browser.new_context(
-                    user_agent=(
-                        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
-                        '(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
-                    ),
+                    user_agent=STEALTH_UA,
                     viewport={'width': 1366, 'height': 768},
                     locale='vi-VN',
                     extra_http_headers={
@@ -219,43 +221,65 @@ async def scrape_vcb():
 
 async def scrape_vietinbank():
     result = {}
-    try:
-        async with async_playwright() as p:
-            browser = await p.chromium.launch()
-            page = await browser.new_page()
-            await page.goto('https://vietinbank.vn/vi/ca-nhan/ty-gia-khcn', timeout=30000)
-            await page.wait_for_selector('table tbody tr td img', state='attached', timeout=20000)
-            await page.wait_for_timeout(1500)
-            tables = await page.query_selector_all('table')
-            if not tables:
-                raise Exception("Khong tim thay table nao tren trang")
-            main_table = tables[0]
-            rows = await main_table.query_selector_all('tbody tr')
-            print(f"VTB: tim thay {len(rows)} dong")
-            for row in rows:
-                flag_el = await row.query_selector('td:first-child img')
-                if not flag_el:
-                    continue
-                code_el = await row.query_selector('td:first-child')
-                code = (await code_el.text_content()).strip()
-                if code not in TARGET_CURRENCIES_VCB:
-                    continue
-                cells = await row.query_selector_all('td')
-                if len(cells) < 4:
-                    continue
-                mua_ck_raw = (await cells[2].text_content()).strip()
-                ban_raw = (await cells[3].text_content()).strip()
+    max_retries = 3
+    for attempt in range(1, max_retries + 1):
+        try:
+            async with async_playwright() as p:
+                browser = await p.chromium.launch(
+                    headless=False,
+                    channel='chrome',
+                    args=['--disable-blink-features=AutomationControlled']
+                )
+                context = await browser.new_context(
+                    user_agent=STEALTH_UA,
+                    viewport={'width': 1366, 'height': 768},
+                    locale='vi-VN',
+                    extra_http_headers={
+                        'Accept-Language': 'vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7'
+                    }
+                )
+                await context.add_init_script(
+                    "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+                )
+                page = await context.new_page()
+                await page.goto('https://vietinbank.vn/vi/ca-nhan/ty-gia-khcn', timeout=30000)
+                await page.wait_for_selector('table tbody tr td img', state='attached', timeout=20000)
+                await page.wait_for_timeout(1500)
 
-                # VietinBank dung dinh dang VN (dau cham=nghin, dau phay=thap phan), can chuan hoa lai
-                mua_val = parse_vn_style(mua_ck_raw)
-                ban_val = parse_vn_style(ban_raw)
-                if code == 'JPY':
-                    result[code] = {'mua': f"{mua_val:,.2f}", 'ban': f"{ban_val:,.2f}"}
-                else:
-                    result[code] = {'mua': f"{round(mua_val):,}", 'ban': f"{round(ban_val):,}"}
-            await browser.close()
-    except Exception as e:
-        print(f"VTB Error: {e}")
+                tables = await page.query_selector_all('table')
+                if not tables:
+                    raise Exception("Khong tim thay table nao tren trang")
+                main_table = tables[0]
+                rows = await main_table.query_selector_all('tbody tr')
+                print(f"VTB: tim thay {len(rows)} dong")
+
+                for row in rows:
+                    flag_el = await row.query_selector('td:first-child img')
+                    if not flag_el:
+                        continue
+                    code_el = await row.query_selector('td:first-child')
+                    code = (await code_el.text_content()).strip()
+                    if code not in TARGET_CURRENCIES_VCB:
+                        continue
+                    cells = await row.query_selector_all('td')
+                    if len(cells) < 4:
+                        continue
+                    mua_ck_raw = (await cells[2].text_content()).strip()
+                    ban_raw = (await cells[3].text_content()).strip()
+
+                    mua_val = parse_vn_style(mua_ck_raw)
+                    ban_val = parse_vn_style(ban_raw)
+                    if code == 'JPY':
+                        result[code] = {'mua': f"{mua_val:,.2f}", 'ban': f"{ban_val:,.2f}"}
+                    else:
+                        result[code] = {'mua': f"{round(mua_val):,}", 'ban': f"{round(ban_val):,}"}
+
+                await browser.close()
+            break
+        except Exception as e:
+            print(f"VTB Error (lan {attempt}/{max_retries}): {e}")
+            if attempt < max_retries:
+                await asyncio.sleep(3)
     rates['VTB'] = result
     print(f"VTB: {result}")
 
@@ -303,10 +327,7 @@ async def scrape_mbbank():
                     args=['--disable-blink-features=AutomationControlled']
                 )
                 context = await browser.new_context(
-                    user_agent=(
-                        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
-                        '(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
-                    ),
+                    user_agent=STEALTH_UA,
                     viewport={'width': 1366, 'height': 768},
                     locale='vi-VN',
                     extra_http_headers={
@@ -485,10 +506,11 @@ async def write_to_sheets():
         mua_rows.append([timestamp, currency] + [get_rate(b, currency, 'mua') for b in BANKS_ORDER])
         ban_rows.append([timestamp, currency] + [get_rate(b, currency, 'ban') for b in BANKS_ORDER])
 
-    # Them 1 dong trong de ngan cach voi lan ghi truoc do
-    empty_row = [''] * (2 + len(BANKS_ORDER))
-    mua_rows.append(empty_row)
-    ban_rows.append(empty_row)
+    # Dong ngan cach: dung dau "---" thay vi de trong hoan toan,
+    # vi Google Sheets API se "nuot" dong trong that va lan ghi sau se de len dung dong do
+    separator_row = ['---'] * (2 + len(BANKS_ORDER))
+    mua_rows.append(separator_row)
+    ban_rows.append(separator_row)
 
     mua_sheet.append_rows(mua_rows)
     ban_sheet.append_rows(ban_rows)
