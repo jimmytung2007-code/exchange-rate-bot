@@ -231,7 +231,10 @@ async def scrape_vietinbank():
                     args=['--disable-blink-features=AutomationControlled']
                 )
                 context = await browser.new_context(
-                    user_agent=STEALTH_UA,
+                    user_agent=(
+                        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+                        '(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
+                    ),
                     viewport={'width': 1366, 'height': 768},
                     locale='vi-VN',
                     extra_http_headers={
@@ -242,7 +245,11 @@ async def scrape_vietinbank():
                     "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
                 )
                 page = await context.new_page()
-                await page.goto('https://vietinbank.vn/vi/ca-nhan/ty-gia-khcn', timeout=30000)
+                await page.goto(
+                    'https://vietinbank.vn/vi/ca-nhan/ty-gia-khcn',
+                    timeout=30000,
+                    wait_until='domcontentloaded'
+                )
                 await page.wait_for_selector('table tbody tr td img', state='attached', timeout=20000)
                 await page.wait_for_timeout(1500)
 
@@ -282,7 +289,6 @@ async def scrape_vietinbank():
                 await asyncio.sleep(3)
     rates['VTB'] = result
     print(f"VTB: {result}")
-
 
 async def scrape_agribank():
     result = {}
