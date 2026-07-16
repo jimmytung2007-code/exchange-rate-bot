@@ -213,7 +213,7 @@ async def scrape_vcb():
 
 async def scrape_vietinbank():
     result = {}
-    max_retries = 3
+    max_retries = 5
     for attempt in range(1, max_retries + 1):
         try:
             async with async_playwright() as p:
@@ -274,7 +274,7 @@ async def scrape_vietinbank():
         except Exception as e:
             print(f"VTB Error (lan {attempt}/{max_retries}): {e}")
             if attempt < max_retries:
-                await asyncio.sleep(5)
+                await asyncio.sleep(10)
     rates['VTB'] = result
     print(f"VTB: {result}")
 
@@ -670,8 +670,12 @@ def generate_image(side):
 
     os.makedirs('outputs', exist_ok=True)
     ts = datetime.now(ZoneInfo('Asia/Ho_Chi_Minh')).strftime('%Y%m%d_%H%M')
-    filename = f"outputs/ty_gia_{side}_{ts}.png"
-    img.save(filename)
+    filename = f"outputs/ty_gia_{side}_{ts}.jpg"
+    img.save(filename, 'JPEG', quality=92)
+
+    latest_filename = f"outputs/latest_{side}.jpg"
+    img.save(latest_filename, 'JPEG', quality=92)
+
     print(f"Da tao anh: {filename}")
     return filename
 
