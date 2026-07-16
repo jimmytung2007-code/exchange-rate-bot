@@ -9,6 +9,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from playwright.async_api import async_playwright
 import asyncio
+from PIL import Image, ImageDraw, ImageFont
 
 creds = Credentials.from_service_account_file(
     'credentials.json',
@@ -492,6 +493,44 @@ def get_rate(bank, currency, side):
     return rates.get(bank, {}).get(currency, {}).get(side, '-')
 
 
+def to_float(bank, currency, side):
+    raw = get_rate(bank, currency, side)
+    if raw in ('-', ''):
+        return None
+    try:
+        return float(raw.replace(',', ''))
+    except Exception:
+        return None
+
+
+def get_ranking(currency, side):
+    """Tra ve (tcb_rank, best_bank, best_value) cho 1 loai tien + 1 chieu (mua/ban).
+    mua vao: gia cao nhat la tot nhat. Ban ra: gia thap nhat la tot nhat.
+    """
+    vals = []
+    for bank in BANKS_ORDER:
+        v = to_float(bank, currency, side)
+        if v is not None:
+            vals.append((bank, v))
+    if not vals:
+        return None, None, None
+    reverse = (side == 'mua')
+    vals_sorted = sorted(vals, key=lambda x: x[1], reverse=reverse)
+    best_bank, best_value = vals_sorted[0]
+    tcb_rank = None
+    for i, (b, v) in enumerate(vals_sorted, start=1):
+        if b == 'TCB':
+            tcb_rank = i
+            break
+    return tcb_rank, best_bank, best_value
+
+
+def format_display(currency, value):
+    if currency == 'JPY':
+        return f"{value:,.2f}"
+    return f"{round(value):,}"
+
+
 async def write_to_sheets():
     mua_sheet = sheet.worksheet('Mua vào')
     ban_sheet = sheet.worksheet('Bán ra')
@@ -500,18 +539,141 @@ async def write_to_sheets():
     mua_rows = []
     ban_rows = []
     for currency in CURRENCIES:
-        mua_rows.append([timestamp, currency] + [get_rate(b, currency, 'mua') for b in BANKS_ORDER])
-        ban_rows.append([timestamp, currency] + [get_rate(b, currency, 'ban') for b in BANKS_ORDER])
+        tcb_rank_mua, _, _ = get_ranking(currency, 'mua')
+        tcb_rank_ban, _, _ = get_ranking(currency, 'ban')
 
-    empty_row = [''] * (2 + len(BANKS_ORDER))
+        mua_row = [timestamp, currency] + [get_rate(b, currency, 'mua') for b in BANKS_ORDER]
+        mua_row.append(f"#{tcb_rank_mua}" if tcb_rank_mua else '-')
+        mua_rows.append(mua_row)
+
+        ban_row = [timestamp, currency] + [get_rate(b, currency, 'ban') for b in BANKS_ORDER]
+        ban_row.append(f"#{tcb_rank_ban}" if tcb_rank_ban else '-')
+        ban_rows.append(ban_row)
+
+    empty_row = [''] * (3 + len(BANKS_ORDER))
     mua_rows.append(empty_row)
     ban_rows.append(empty_row)
 
-    # Chen ngay sau dong tieu de (row 2), day toan bo du lieu cu xuong duoi
     mua_sheet.insert_rows(mua_rows, row=2)
     ban_sheet.insert_rows(ban_rows, row=2)
 
-    print("Da ghi vao Google Sheets thanh cong (moi nhat len dau)!")
+    print("Da ghi vao Google Sheets thanh cong (moi nhat len dau, co TCB Rating)!")
+
+
+def load_font(size, bold=False):
+    candidates = (
+        ["C:/Windows/Fonts/arialbd.ttf", "C:/Windows/Fonts/seguisb.ttf"] if bold
+        else ["C:/Windows/Fonts/arial.ttf", "C:/Windows/Fonts/segoeui.ttf"]
+    )
+    for path in candidates:
+        try:
+            return ImageFont.truetype(path, size)
+        except Exception:
+            continue
+    return ImageFont.load_default()
+
+
+def generate_image(side):
+    label = "Mua vào" if side == 'mua' else "Bán ra"
+    cols = ['Loại tiền'] + BANKS_ORDER + ['TCB Rating']
+    col_widths = [95] + [100] * len(BANKS_ORDER) + [95]
+
+    row_height = 48
+    header_height = 55
+    title_height = 80
+    footer_height = 110
+    padding = 25
+
+    width = sum(col_widths) + padding * 2
+    height = title_height + header_height + row_height * len(CURRENCIES) + footer_height + padding * 2
+
+    img = Image.new('RGB', (width, height), 'white')
+    draw = ImageDraw.Draw(img)
+
+    font_title = load_font(24, bold=True)
+    font_time = load_font(13)
+    font_header = load_font(14, bold=True)
+    font_cell = load_font(14)
+    font_cell_bold = load_font(14, bold=True)
+    font_box_label = load_font(12, bold=True)
+    font_box_value = load_font(13, bold=True)
+
+    timestamp = datetime.now(ZoneInfo('Asia/Ho_Chi_Minh')).strftime('%H:%M - %d/%m/%Y')
+
+    draw.text((padding, 15), f"So sánh tỷ giá {label.lower()} giữa các ngân hàng", font=font_title, fill=(25, 25, 60))
+    draw.text((padding, 48), timestamp, font=font_time, fill=(130, 130, 130))
+
+    y = title_height
+    x = padding
+
+    draw.rectangle([x, y, x + sum(col_widths), y + header_height], fill=(230, 232, 245))
+    cx = x
+    for i, col_name in enumerate(cols):
+        draw.text((cx + 8, y + 17), col_name, font=font_header, fill=(30, 30, 90))
+        cx += col_widths[i]
+    y += header_height
+
+    for currency in CURRENCIES:
+        tcb_rank, best_bank, best_value = get_ranking(currency, side)
+        cx = x
+        draw.line([(x, y), (x + sum(col_widths), y)], fill=(225, 225, 225))
+
+        draw.text((cx + 8, y + 14), currency, font=font_cell_bold, fill=(20, 20, 20))
+        cx += col_widths[0]
+
+        for i, bank in enumerate(BANKS_ORDER):
+            val = get_rate(bank, currency, side)
+            is_best = (bank == best_bank)
+            color = (0, 110, 200) if is_best else (40, 40, 40)
+            font = font_cell_bold if is_best else font_cell
+            draw.text((cx + 8, y + 14), str(val), font=font, fill=color)
+            cx += col_widths[i + 1]
+
+        rank_text = f"#{tcb_rank}" if tcb_rank else '-'
+        rank_color = (0, 150, 60) if tcb_rank == 1 else (200, 60, 60) if tcb_rank else (150, 150, 150)
+        draw.text((cx + 8, y + 14), rank_text, font=font_cell_bold, fill=rank_color)
+
+        y += row_height
+
+    y += 15
+    draw.text((padding, y), f"Tỷ giá {label.lower()} tốt nhất:", font=load_font(15, bold=True), fill=(200, 40, 40))
+    y += 28
+
+    box_gap = 12
+    box_w = (sum(col_widths) - box_gap * (len(CURRENCIES) - 1)) // len(CURRENCIES)
+    box_h = footer_height - 45
+    bx = padding
+
+    for currency in CURRENCIES:
+        tcb_rank, best_bank, best_value = get_ranking(currency, side)
+        draw.rounded_rectangle([bx, y, bx + box_w, y + box_h], radius=8, outline=(200, 60, 60), width=2)
+        draw.text((bx + 8, y + 8), currency, font=font_box_label, fill=(200, 60, 60))
+        if best_bank:
+            value_str = format_display(currency, best_value)
+            draw.text((bx + 8, y + 28), f"{best_bank}", font=font_box_value, fill=(30, 30, 30))
+            draw.text((bx + 8, y + 46), value_str, font=font_cell, fill=(80, 80, 80))
+        bx += box_w + box_gap
+
+    # Chen logo Techcombank o goc phai tren cung (neu co file logo.png)
+    logo_path = 'logo.jpg'
+    if os.path.exists(logo_path):
+        try:
+            logo = Image.open(logo_path).convert('RGBA')
+            logo_height = 80
+            ratio = logo_height / logo.height
+            logo_resized = logo.resize((int(logo.width * ratio), logo_height))
+            logo_x = width - logo_resized.width - 20
+            logo_y = 0
+            img.paste(logo_resized, (logo_x, logo_y), logo_resized)
+        except Exception as e:
+            print(f"Khong the chen logo: {e}")
+
+    os.makedirs('outputs', exist_ok=True)
+    ts = datetime.now(ZoneInfo('Asia/Ho_Chi_Minh')).strftime('%Y%m%d_%H%M')
+    filename = f"outputs/ty_gia_{side}_{ts}.png"
+    img.save(filename)
+    print(f"Da tao anh: {filename}")
+    return filename
 
 
 async def main():
@@ -527,6 +689,8 @@ async def main():
     print("=== KET QUA ===")
     print(rates)
     await write_to_sheets()
+    generate_image('mua')
+    generate_image('ban')
 
 
 if __name__ == '__main__':
