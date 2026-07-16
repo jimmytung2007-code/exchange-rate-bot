@@ -20,7 +20,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install system dependencies (Xvfb)
-        run: sudo apt-get update && sudo apt-get install -y xvfb
+        run: sudo apt-get update && sudo apt-get install -y xvfb fonts-dejavu-core fonts-liberation
 
       - name: Install Python dependencies
         run: |
