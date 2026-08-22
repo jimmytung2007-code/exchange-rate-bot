@@ -43,7 +43,7 @@ jobs:
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
         run: xvfb-run -a python scrape_exchange_rate.py
 
-       - name: Commit and push generated images
+      - name: Commit and push generated images
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
