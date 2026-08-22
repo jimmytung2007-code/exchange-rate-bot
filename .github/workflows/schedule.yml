@@ -38,6 +38,9 @@ jobs:
       - name: Run scraper
         env:
           SHEET_ID: ${{ secrets.SHEET_ID }}
+          EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
         run: xvfb-run -a python scrape_exchange_rate.py
 
       - name: Commit and push generated images
@@ -47,16 +50,3 @@ jobs:
           git add outputs/
           git commit -m "Cap nhat anh ty gia tu dong" || echo "Khong co thay doi"
           git push
-
-      - name: Send email with exchange rate images
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{ secrets.EMAIL_USERNAME }}
-          password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "Tỷ giá hối đoái cập nhật - ${{ github.run_id }}"
-          to: ${{ secrets.EMAIL_TO }}
-          from: ${{ secrets.EMAIL_USERNAME }}
-          body: "Đính kèm là bảng tỷ giá mua vào và bán ra mới nhất, được cập nhật tự động."
-          attachments: outputs/latest_mua.jpg,outputs/latest_ban.jpg
