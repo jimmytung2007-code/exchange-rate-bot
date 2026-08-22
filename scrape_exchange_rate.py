@@ -10,6 +10,12 @@ from zoneinfo import ZoneInfo
 from playwright.async_api import async_playwright
 import asyncio
 from PIL import Image, ImageDraw, ImageFont
+import base64
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email.mime.text import MIMEText
+from email import encoders
 
 creds = Credentials.from_service_account_file(
     'credentials.json',
@@ -21,12 +27,19 @@ sheet = gc.open_by_key(os.environ.get('SHEET_ID'))
 
 rates = {}
 
-TARGET_CURRENCIES = ['USD (50,100)', 'EUR', 'JPY', 'SGD', 'GBP', 'CNY']
-CODE_MAP = {'USD (50,100)': 'USD', 'EUR': 'EUR', 'JPY': 'JPY', 'SGD': 'SGD', 'GBP': 'GBP', 'CNY': 'CNY'}
-TARGET_CURRENCIES_VCB = ['USD', 'EUR', 'JPY', 'SGD', 'GBP', 'CNY']
+TARGET_CURRENCIES = ['USD (50,100)', 'EUR', 'JPY', 'SGD', 'GBP', 'CNY', 'AUD', 'CAD']
+CODE_MAP = {'USD (50,100)': 'USD', 'EUR': 'EUR', 'JPY': 'JPY', 'SGD': 'SGD', 'GBP': 'GBP', 'CNY': 'CNY', 'AUD': 'AUD', 'CAD': 'CAD'}
+TARGET_CURRENCIES_VCB = ['USD', 'EUR', 'JPY', 'SGD', 'GBP', 'CNY', 'AUD', 'CAD']
 
-BANKS_ORDER = ['TCB', 'EXIM', 'BIDV', 'VCB', 'VTB', 'AGRI', 'MBB', 'ACB', 'SACOM']
-CURRENCIES = ['USD', 'EUR', 'JPY', 'SGD', 'GBP', 'CNY']
+BANKS_ORDER = ['TCB', 'EXIM', 'BIDV', 'VCB', 'AGRI', 'MBB', 'ACB', 'SACOM']
+CURRENCIES = ['USD', 'EUR', 'JPY', 'SGD', 'GBP', 'CNY', 'AUD', 'CAD']
+
+# Danh sach mo rong cho bang rieng chi TCB (co ca tien mat)
+TCB_EXTRA_LIST = ['USD (50,100)', 'AUD', 'CAD', 'SGD', 'EUR', 'GBP', 'JPY', 'KRW', 'NZD']
+TCB_EXTRA_CODE_MAP = {'USD (50,100)': 'USD'}
+TCB_EXTRA_DISPLAY_ORDER = ['USD', 'AUD', 'CAD', 'SGD', 'EUR', 'GBP', 'JPY', 'KRW', 'NZD']
+
+tcb_extra_rates = {}
 
 
 def format_rate_value(code, raw_text):
@@ -40,6 +53,18 @@ def format_rate_value(code, raw_text):
 
 def parse_vn_style(raw_text):
     return float(raw_text.replace('.', '').replace(',', '.'))
+
+
+def format_tcb_value(currency, raw):
+    if raw == '-' or raw is None or raw == '':
+        return '-'
+    try:
+        val = float(str(raw).replace(',', ''))
+    except Exception:
+        return str(raw)
+    if currency in ('JPY', 'KRW'):
+        return f"{val:,.2f}"
+    return f"{round(val):,}"
 
 
 async def scrape_techcombank():
@@ -77,6 +102,50 @@ async def scrape_techcombank():
     print(f"TCB: {result}")
 
 
+async def scrape_techcombank_extra():
+    """Scrape TCB voi danh sach tien te mo rong, co ca 4 cot (mua/ban x tien mat/CK)"""
+    result = {}
+    try:
+        async with async_playwright() as p:
+            browser = await p.chromium.launch()
+            page = await browser.new_page()
+            await page.goto('https://techcombank.com/cong-cu-tien-ich/ty-gia', timeout=30000)
+            await page.wait_for_selector('.data-content__item', state='attached', timeout=15000)
+            await page.wait_for_timeout(1500)
+            for _ in range(10):
+                await page.mouse.wheel(0, 500)
+                await page.wait_for_timeout(300)
+            await page.wait_for_timeout(1000)
+            rows = await page.query_selector_all('.exchange-rate__table-records:not(.table-header)')
+            print(f"TCB EXTRA: tim thay {len(rows)} dong")
+            for row in rows:
+                code_el = await row.query_selector('.table__first-column.first-column p')
+                if not code_el:
+                    continue
+                code = (await code_el.text_content()).strip()
+                if code not in TCB_EXTRA_LIST:
+                    continue
+                items = await row.query_selector_all('.data-content__item p')
+                if len(items) >= 4:
+                    mua_tm = (await items[0].text_content()).strip()
+                    mua_ck = (await items[1].text_content()).strip()
+                    ban_tm = (await items[2].text_content()).strip()
+                    ban_ck = (await items[3].text_content()).strip()
+                    final_code = TCB_EXTRA_CODE_MAP.get(code, code)
+                    result[final_code] = {
+                        'mua_ck': mua_ck,
+                        'mua_tm': mua_tm,
+                        'ban_ck': ban_ck,
+                        'ban_tm': ban_tm,
+                    }
+            await browser.close()
+    except Exception as e:
+        print(f"TCB EXTRA Error: {e}")
+    global tcb_extra_rates
+    tcb_extra_rates = result
+    print(f"TCB EXTRA: {result}")
+
+
 async def scrape_eximbank():
     result = {}
     try:
@@ -109,7 +178,7 @@ async def scrape_eximbank():
                 ban_ck = (await ban_ck_el.text_content()).strip()
                 if name == 'USD (50-100)':
                     result['USD'] = {'mua': mua_ck, 'ban': ban_ck}
-                elif name in ('EUR', 'JPY', 'SGD', 'GBP', 'CNY'):
+                elif name in ('EUR', 'JPY', 'SGD', 'GBP', 'CNY', 'AUD', 'CAD'):
                     result[name] = {'mua': mua_ck, 'ban': ban_ck}
             await browser.close()
     except Exception as e:
@@ -137,7 +206,7 @@ async def scrape_bidv():
                 if not code_el:
                     continue
                 code = (await code_el.text_content()).strip()
-                if code != 'USD' and code not in ('EUR', 'JPY', 'SGD', 'GBP', 'CNY'):
+                if code != 'USD' and code not in ('EUR', 'JPY', 'SGD', 'GBP', 'CNY', 'AUD', 'CAD'):
                     continue
                 mua_ck_el = await cells[3].query_selector('span.ng-binding')
                 ban_el = await cells[4].query_selector('span.ng-binding')
@@ -213,7 +282,7 @@ async def scrape_vcb():
 
 async def scrape_vietinbank():
     result = {}
-    max_retries = 5
+    max_retries = 3
     for attempt in range(1, max_retries + 1):
         try:
             async with async_playwright() as p:
@@ -352,7 +421,7 @@ async def scrape_mbbank():
                     name = (await cells[0].text_content()).strip()
                     if name == 'USD (USD 50-100)':
                         code = 'USD'
-                    elif name in ('EUR', 'JPY', 'SGD', 'GBP', 'CNY'):
+                    elif name in ('EUR', 'JPY', 'SGD', 'GBP', 'CNY', 'AUD', 'CAD'):
                         code = name
                     else:
                         continue
@@ -402,7 +471,7 @@ async def scrape_acb():
                     '.list-ty-gia.hide-mb .item.dl-grid-md-5:not(.item-heading) h4.title',
                     'els => els.map(e => e.textContent.trim())'
                 )
-                if all(code in names_now for code in ['EUR', 'GBP', 'JPY', 'SGD', 'CNY']):
+                if all(code in names_now for code in ['EUR', 'GBP', 'JPY', 'SGD', 'CNY', 'AUD', 'CAD']):
                     break
                 more_btn = await page.query_selector('a.btn:has-text("Xem thêm")')
                 if not more_btn:
@@ -423,7 +492,7 @@ async def scrape_acb():
                 name = (await name_el.text_content()).strip()
                 if name == 'USD (50,100)':
                     code = 'USD'
-                elif name in ('EUR', 'GBP', 'JPY', 'SGD', 'CNY'):
+                elif name in ('EUR', 'GBP', 'JPY', 'SGD', 'CNY', 'AUD', 'CAD'):
                     code = name
                 else:
                     continue
@@ -444,47 +513,56 @@ async def scrape_acb():
 
 async def scrape_sacombank():
     result = {}
-    try:
-        async with async_playwright() as p:
-            browser = await p.chromium.launch()
-            page = await browser.new_page()
-            await page.goto('https://www.sacombank.com.vn/cong-cu/ty-gia.html', timeout=30000)
-            await page.wait_for_selector('table.exchange-rate__body-table tbody tr.body-row', state='attached', timeout=15000)
-            await page.wait_for_timeout(1000)
-            try:
-                load_all_btn = await page.query_selector('.exchange-rate__body-load-all-btn')
-                if load_all_btn:
-                    await load_all_btn.evaluate('el => el.click()')
-                    await page.wait_for_timeout(1000)
-            except Exception:
-                pass
-            rows = await page.query_selector_all(
-                'table.exchange-rate__body-table[data-type="currency"] tbody tr.body-row'
-            )
-            print(f"SACOM: tim thay {len(rows)} dong")
-            for row in rows:
-                cells = await row.query_selector_all('td.body-col')
-                if len(cells) < 5:
-                    continue
-                code_el = await cells[0].query_selector('span')
-                if not code_el:
-                    continue
-                code = (await code_el.text_content()).strip()
-                if code not in ('USD', 'EUR', 'JPY', 'SGD', 'GBP', 'CNY'):
-                    continue
-                mua_ck_raw = (await cells[2].text_content()).strip()
-                ban_ck_raw = (await cells[4].text_content()).strip()
-                if not mua_ck_raw or not ban_ck_raw:
-                    continue
-                mua_val = parse_vn_style(mua_ck_raw)
-                ban_val = parse_vn_style(ban_ck_raw)
-                if code == 'JPY':
-                    result[code] = {'mua': f"{mua_val:,.2f}", 'ban': f"{ban_val:,.2f}"}
-                else:
-                    result[code] = {'mua': f"{round(mua_val):,}", 'ban': f"{round(ban_val):,}"}
-            await browser.close()
-    except Exception as e:
-        print(f"SACOM Error: {e}")
+    max_retries = 3
+    for attempt in range(1, max_retries + 1):
+        try:
+            async with async_playwright() as p:
+                browser = await p.chromium.launch()
+                page = await browser.new_page()
+                await page.goto(
+                    'https://www.sacombank.com.vn/cong-cu/ty-gia.html',
+                    timeout=40000,
+                    wait_until='domcontentloaded'
+                )
+                await page.wait_for_selector('table.exchange-rate__body-table tbody tr.body-row', state='attached', timeout=15000)
+                await page.wait_for_timeout(1000)
+                try:
+                    load_all_btn = await page.query_selector('.exchange-rate__body-load-all-btn')
+                    if load_all_btn:
+                        await load_all_btn.evaluate('el => el.click()')
+                        await page.wait_for_timeout(1000)
+                except Exception:
+                    pass
+                rows = await page.query_selector_all(
+                    'table.exchange-rate__body-table[data-type="currency"] tbody tr.body-row'
+                )
+                print(f"SACOM: tim thay {len(rows)} dong")
+                for row in rows:
+                    cells = await row.query_selector_all('td.body-col')
+                    if len(cells) < 5:
+                        continue
+                    code_el = await cells[0].query_selector('span')
+                    if not code_el:
+                        continue
+                    code = (await code_el.text_content()).strip()
+                    if code not in ('USD', 'EUR', 'JPY', 'SGD', 'GBP', 'CNY', 'AUD', 'CAD'):
+                        continue
+                    mua_ck_raw = (await cells[2].text_content()).strip()
+                    ban_ck_raw = (await cells[4].text_content()).strip()
+                    if not mua_ck_raw or not ban_ck_raw:
+                        continue
+                    mua_val = parse_vn_style(mua_ck_raw)
+                    ban_val = parse_vn_style(ban_ck_raw)
+                    if code == 'JPY':
+                        result[code] = {'mua': f"{mua_val:,.2f}", 'ban': f"{ban_val:,.2f}"}
+                    else:
+                        result[code] = {'mua': f"{round(mua_val):,}", 'ban': f"{round(ban_val):,}"}
+                await browser.close()
+            break
+        except Exception as e:
+            print(f"SACOM Error (lan {attempt}/{max_retries}): {e}")
+            if attempt < max_retries:
+                await asyncio.sleep(5)
     rates['SACOM'] = result
     print(f"SACOM: {result}")
 
@@ -504,9 +582,6 @@ def to_float(bank, currency, side):
 
 
 def get_ranking(currency, side):
-    """Tra ve (tcb_rank, best_bank, best_value) cho 1 loai tien + 1 chieu (mua/ban).
-    mua vao: gia cao nhat la tot nhat. Ban ra: gia thap nhat la tot nhat.
-    """
     vals = []
     for bank in BANKS_ORDER:
         v = to_float(bank, currency, side)
@@ -664,16 +739,18 @@ def generate_image(side):
             draw.text((bx + 8, y + 46), value_str, font=font_cell, fill=(80, 80, 80))
         bx += box_w + box_gap
 
-    # Chen logo Techcombank o goc phai tren cung (neu co file logo.png)
+    filename = f"ty_gia_{side}.png"
+    img.save(filename)
+
     logo_path = 'logo.jpg'
     if os.path.exists(logo_path):
         try:
             logo = Image.open(logo_path).convert('RGBA')
-            logo_height = 80
+            logo_height = 40
             ratio = logo_height / logo.height
             logo_resized = logo.resize((int(logo.width * ratio), logo_height))
             logo_x = width - logo_resized.width - 20
-            logo_y = 0
+            logo_y = 15
             img.paste(logo_resized, (logo_x, logo_y), logo_resized)
         except Exception as e:
             print(f"Khong the chen logo: {e}")
@@ -690,21 +767,250 @@ def generate_image(side):
     return filename
 
 
+async def generate_tcb_extra_image():
+    today_str = datetime.now(ZoneInfo('Asia/Ho_Chi_Minh')).strftime('%d/%m/%Y')
+    time_str = datetime.now(ZoneInfo('Asia/Ho_Chi_Minh')).strftime('%H:%M')
+
+    logo_uri = ''
+    logo_path = os.path.abspath('logo.jpg')
+    if os.path.exists(logo_path):
+        with open(logo_path, 'rb') as f:
+            logo_b64 = base64.b64encode(f.read()).decode('utf-8')
+        logo_uri = f"data:image/jpeg;base64,{logo_b64}"
+
+    rows_html = ""
+    for i, currency in enumerate(TCB_EXTRA_DISPLAY_ORDER):
+        data = tcb_extra_rates.get(currency, {})
+        mua_ck = format_tcb_value(currency, data.get('mua_ck', '-'))
+        mua_tm = format_tcb_value(currency, data.get('mua_tm', '-'))
+        ban_ck = format_tcb_value(currency, data.get('ban_ck', '-'))
+        ban_tm = format_tcb_value(currency, data.get('ban_tm', '-'))
+        alt_class = 'alt' if i % 2 == 1 else ''
+        rows_html += f"""
+        <div class="row {alt_class}">
+          <div class="currency-tag"><span>{currency}</span></div>
+          <div class="value blue">{mua_ck}</div>
+          <div class="value dark">{mua_tm if mua_tm != '-' else ''}</div>
+          <div class="value blue">{ban_ck}</div>
+          <div class="value dark">{ban_tm if ban_tm != '-' else ''}</div>
+        </div>
+        """
+
+    buildings_html = "".join(
+        f'<div class="bld" style="left:{x}px;width:{w}px;height:{h}px;"></div>'
+        for x, w, h in [
+            (10, 34, 90), (50, 26, 130), (82, 40, 75), (128, 30, 150),
+            (164, 22, 100), (192, 46, 120), (244, 28, 85), (278, 36, 145),
+            (320, 24, 95), (350, 42, 115),
+        ]
+    )
+
+    html_content = f"""<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+    * {{ margin: 0; padding: 0; box-sizing: border-box; font-family: 'Be Vietnam Pro', Arial, sans-serif; }}
+    body {{ width: 900px; background: #ffffff; }}
+
+    .header {{ position: relative; height: 190px; overflow: hidden; background: #1a1a1a; }}
+    .skyline {{
+        position: absolute; left: 0; bottom: 0; width: 420px; height: 190px;
+        background: linear-gradient(180deg, #6b6b6b 0%, #2e2e2e 100%); overflow: hidden;
+    }}
+    .bld {{ position: absolute; bottom: 0; background: rgba(0,0,0,0.35); }}
+    .tagline {{
+        position: absolute; top: 24px; left: 24px; z-index: 3; color: white;
+        font-size: 20px; font-weight: 800; letter-spacing: 1px;
+        display: flex; align-items: center; gap: 8px;
+    }}
+    .tagline .arrow {{
+        width: 0; height: 0; border-top: 11px solid transparent;
+        border-bottom: 11px solid transparent; border-left: 16px solid #e11d2e;
+    }}
+    .header-red {{
+        position: absolute; right: 0; top: 0; bottom: 0; left: 380px;
+        background: linear-gradient(135deg, #e11d2e 0%, #a30d1c 100%);
+        clip-path: polygon(12% 0, 100% 0, 100% 100%, 0% 100%);
+        display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+    }}
+    .header-red h1 {{ color: white; font-size: 32px; font-weight: 800; }}
+    .header-red .date {{ color: rgba(255,255,255,0.92); font-size: 20px; font-weight: 700; margin-top: 6px; }}
+
+    .subheader {{
+        display: flex; align-items: center; justify-content: space-between;
+        background: linear-gradient(100deg, #e11d2e 0 46%, #ffffff 46%); padding: 20px 32px;
+    }}
+    .subheader .label {{ color: white; font-size: 17px; font-weight: 800; line-height: 1.35; }}
+    .subheader img {{ height: 40px; }}
+
+    .col-group-header {{ display: flex; }}
+    .col-group-header .spacer {{ flex: 0 0 15%; }}
+    .col-group-header .grp {{ flex: 1; text-align: center; padding: 12px 0; font-size: 17px; font-weight: 800; color: white; }}
+    .col-group-header .grp small {{ display: block; font-size: 12px; font-weight: 600; margin-top: 2px; opacity: 0.9; }}
+    .col-group-header .grp.mua {{ background: #1a56db; }}
+    .col-group-header .grp.ban {{ background: #e11d2e; }}
+
+    .col-sub-header {{ display: flex; background: #f2f2f2; font-size: 12.5px; font-weight: 700; color: #555; }}
+    .col-sub-header .spacer {{ flex: 0 0 15%; }}
+    .col-sub-header .c {{ flex: 1; text-align: center; padding: 9px 0; letter-spacing: 0.3px; }}
+
+    .row {{ display: flex; align-items: stretch; height: 60px; border-bottom: 2px solid #ffffff; }}
+    .currency-tag {{
+        flex: 0 0 15%; background: linear-gradient(120deg, #e11d2e, #c41828);
+        display: flex; align-items: center; padding-left: 18px; position: relative;
+    }}
+    .currency-tag::after {{
+        content: ''; position: absolute; right: -22px; top: 0;
+        border-top: 30px solid transparent; border-bottom: 30px solid transparent; border-left: 22px solid #e11d2e;
+    }}
+    .row.alt .currency-tag {{ background: #c7c7c7; }}
+    .row.alt .currency-tag::after {{ border-left-color: #c7c7c7; }}
+    .currency-tag span {{ color: white; font-size: 18px; font-weight: 800; }}
+
+    .value {{ flex: 1; display: flex; align-items: center; justify-content: center; font-size: 21px; font-weight: 800; background: #ececec; }}
+    .row.alt .value {{ background: #dcdcdc; }}
+    .value.blue {{ color: #1a56db; }}
+    .value.dark {{ color: #1a1a1a; }}
+
+    .footer-note {{
+        margin: 18px 32px; padding: 12px 16px; border: 2px solid #e11d2e; border-radius: 6px;
+        font-size: 12.5px; color: #333; font-weight: 600; line-height: 1.5;
+    }}
+    .footer-time {{
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 0 32px 20px; font-size: 12.5px; color: #888; font-weight: 700;
+    }}
+</style>
+</head>
+<body>
+    <div class="header">
+        <div class="skyline">{buildings_html}</div>
+        <div class="tagline"><span class="arrow"></span>BE GREATER</div>
+        <div class="header-red">
+            <h1>TỶ GIÁ NGOẠI TỆ</h1>
+            <div class="date">NGÀY {today_str}</div>
+        </div>
+    </div>
+
+    <div class="subheader">
+        <div class="label">Tỉ giá TCB<br>Ngoại tệ</div>
+        <img src="{logo_uri}" />
+    </div>
+
+    <div class="col-group-header">
+        <div class="spacer"></div>
+        <div class="grp mua">TỶ GIÁ MUA<small>(Từ khách hàng)</small></div>
+        <div class="grp ban">TỶ GIÁ BÁN<small>(Cho khách hàng)</small></div>
+    </div>
+    <div class="col-sub-header">
+        <div class="spacer"></div>
+        <div class="c">MUA CHUYỂN KHOẢN</div>
+        <div class="c">MUA TIỀN MẶT</div>
+        <div class="c">BÁN CHUYỂN KHOẢN</div>
+        <div class="c">BÁN TIỀN MẶT</div>
+    </div>
+
+    {rows_html}
+
+    <div class="footer-note">
+        LƯU Ý: Tỷ giá có thể thay đổi theo thời điểm giao dịch. Vui lòng liên hệ điểm giao dịch Techcombank gần nhất hoặc tổng đài để được hỗ trợ.
+    </div>
+    <div class="footer-time">
+        <span>Dữ liệu tổng hợp tự động</span>
+        <span>Thời gian cập nhật: {time_str} - {today_str}</span>
+    </div>
+</body>
+</html>"""
+
+    html_path = os.path.abspath('tcb_only_temp.html').replace(os.sep, '/')
+    with open('tcb_only_temp.html', 'w', encoding='utf-8') as f:
+        f.write(html_content)
+
+    os.makedirs('outputs', exist_ok=True)
+    ts = datetime.now(ZoneInfo('Asia/Ho_Chi_Minh')).strftime('%Y%m%d_%H%M')
+    filename = f"outputs/tcb_only_{ts}.jpg"
+    latest_filename = "outputs/latest_tcb_only.jpg"
+
+    async with async_playwright() as p:
+        browser = await p.chromium.launch()
+        page = await browser.new_page(viewport={'width': 900, 'height': 200})
+        await page.goto(f'file:///{html_path}')
+        await page.wait_for_timeout(600)
+        body = await page.query_selector('body')
+        await body.screenshot(path=filename, type='jpeg', quality=92)
+        await body.screenshot(path=latest_filename, type='jpeg', quality=92)
+        await browser.close()
+
+    try:
+        os.remove('tcb_only_temp.html')
+    except Exception:
+        pass
+
+    print(f"Da tao anh TCB rieng (HTML): {filename}")
+    return filename
+
+
+def send_email_report(attachments):
+    email_username = os.environ.get('EMAIL_USERNAME')
+    email_password = os.environ.get('EMAIL_PASSWORD')
+    email_to = os.environ.get('EMAIL_TO')
+
+    if not email_username or not email_password or not email_to:
+        print("Thieu thong tin email trong .env, bo qua buoc gui mail.")
+        return
+
+    msg = MIMEMultipart()
+    msg['From'] = email_username
+    msg['To'] = email_to
+    msg['Subject'] = f"Ty gia hoi doai cap nhat - {datetime.now(ZoneInfo('Asia/Ho_Chi_Minh')).strftime('%H:%M %d/%m/%Y')}"
+    msg.attach(MIMEText("Dinh kem la bang ty gia mua vao, ban ra va bang rieng TCB, cap nhat tu dong.", 'plain'))
+
+    for filepath in attachments:
+        if not os.path.exists(filepath):
+            continue
+        with open(filepath, 'rb') as f:
+            part = MIMEBase('application', 'octet-stream')
+            part.set_payload(f.read())
+        encoders.encode_base64(part)
+        part.add_header('Content-Disposition', f'attachment; filename={os.path.basename(filepath)}')
+        msg.attach(part)
+
+    try:
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(email_username, email_password)
+        server.sendmail(email_username, email_to, msg.as_string())
+        server.quit()
+        print("Da gui email thanh cong!")
+    except Exception as e:
+        print(f"Loi gui email: {e}")
+
+
 async def main():
     await scrape_techcombank()
     await scrape_eximbank()
     await scrape_bidv()
     await scrape_vcb()
-    await scrape_vietinbank()
+    # await scrape_vietinbank()
     await scrape_agribank()
     await scrape_mbbank()
     await scrape_acb()
     await scrape_sacombank()
+    await scrape_techcombank_extra()
     print("=== KET QUA ===")
     print(rates)
     await write_to_sheets()
     generate_image('mua')
     generate_image('ban')
+    await generate_tcb_extra_image()
+    send_email_report([
+        'outputs/latest_mua.jpg',
+        'outputs/latest_ban.jpg',
+        'outputs/latest_tcb_only.jpg',
+    ])
 
 
 if __name__ == '__main__':
