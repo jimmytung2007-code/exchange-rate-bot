@@ -962,9 +962,11 @@ def send_email_report(attachments):
         print("Thieu thong tin email trong .env, bo qua buoc gui mail.")
         return
 
+    email_to_list = [e.strip() for e in email_to.split(',') if e.strip()]
+
     msg = MIMEMultipart()
     msg['From'] = email_username
-    msg['To'] = email_to
+    msg['To'] = ', '.join(email_to_list)
     msg['Subject'] = f"Ty gia hoi doai cap nhat - {datetime.now(ZoneInfo('Asia/Ho_Chi_Minh')).strftime('%H:%M %d/%m/%Y')}"
     msg.attach(MIMEText("Dinh kem la bang ty gia mua vao, ban ra va bang rieng TCB, cap nhat tu dong.", 'plain'))
 
@@ -982,7 +984,7 @@ def send_email_report(attachments):
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
         server.login(email_username, email_password)
-        server.sendmail(email_username, email_to, msg.as_string())
+        server.sendmail(email_username, email_to_list, msg.as_string())
         server.quit()
         print("Da gui email thanh cong!")
     except Exception as e:
