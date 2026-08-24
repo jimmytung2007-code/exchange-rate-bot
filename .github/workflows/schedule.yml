@@ -2,7 +2,9 @@ name: Collect Exchange Rates
 
 on:
   schedule:
-    - cron: '0 2,6 * * *'
+    - cron: '15 1 * * *'
+    - cron: '25 3 * * *'
+    - cron: '30 5 * * *'
   workflow_dispatch:
 
 permissions:
