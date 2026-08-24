@@ -148,41 +148,73 @@ async def scrape_techcombank_extra():
 
 async def scrape_eximbank():
     result = {}
-    try:
-        async with async_playwright() as p:
-            browser = await p.chromium.launch()
-            page = await browser.new_page()
-            await page.goto('https://eximbank.com.vn/bang-ty-gia', timeout=30000)
-            await page.wait_for_selector('table tbody tr', state='attached', timeout=15000)
-            await page.wait_for_timeout(1000)
-            try:
-                await page.click('text=Xem tất cả', timeout=5000)
-                await page.wait_for_timeout(1000)
-            except Exception:
-                pass
-            rows = await page.query_selector_all('table tbody tr')
-            print(f"EXIM: tim thay {len(rows)} dong")
-            for row in rows:
-                name_el = await row.query_selector('td:first-child p.font-bold')
-                if not name_el:
-                    continue
-                name = (await name_el.text_content()).strip()
-                cells = await row.query_selector_all('td')
-                if len(cells) < 5:
-                    continue
-                mua_ck_el = await cells[2].query_selector('p')
-                ban_ck_el = await cells[4].query_selector('p')
-                if not mua_ck_el or not ban_ck_el:
-                    continue
-                mua_ck = (await mua_ck_el.text_content()).strip()
-                ban_ck = (await ban_ck_el.text_content()).strip()
-                if name == 'USD (50-100)':
-                    result['USD'] = {'mua': mua_ck, 'ban': ban_ck}
-                elif name in ('EUR', 'JPY', 'SGD', 'GBP', 'CNY', 'AUD', 'CAD'):
-                    result[name] = {'mua': mua_ck, 'ban': ban_ck}
-            await browser.close()
-    except Exception as e:
-        print(f"EXIM Error: {e}")
+    max_retries = 3
+    for attempt in range(1, max_retries + 1):
+        try:
+            async with async_playwright() as p:
+                browser = await p.chromium.launch(
+                    headless=False,
+                    channel='chrome',
+                    args=['--disable-blink-features=AutomationControlled']
+                )
+                context = await browser.new_context(
+                    user_agent=(
+                        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+                        '(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
+                    ),
+                    viewport={'width': 1366, 'height': 768},
+                    locale='vi-VN',
+                    extra_http_headers={
+                        'Accept-Language': 'vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7'
+                    }
+                )
+                await context.add_init_script(
+                    "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+                )
+                page = await context.new_page()
+                await page.goto(
+                    'https://eximbank.com.vn/bang-ty-gia',
+                    timeout=30000,
+                    wait_until='domcontentloaded'
+                )
+                await page.wait_for_selector('table tbody tr', state='attached', timeout=20000)
+                await page.wait_for_timeout(1500)
+
+                try:
+                    await page.click('text=Xem tất cả', timeout=5000)
+                    await page.wait_for_timeout(1000)
+                except Exception:
+                    pass
+
+                rows = await page.query_selector_all('table tbody tr')
+                print(f"EXIM: tim thay {len(rows)} dong")
+
+                for row in rows:
+                    name_el = await row.query_selector('td:first-child p.font-bold')
+                    if not name_el:
+                        continue
+                    name = (await name_el.text_content()).strip()
+                    cells = await row.query_selector_all('td')
+                    if len(cells) < 5:
+                        continue
+                    mua_ck_el = await cells[2].query_selector('p')
+                    ban_ck_el = await cells[4].query_selector('p')
+                    if not mua_ck_el or not ban_ck_el:
+                        continue
+                    mua_ck = (await mua_ck_el.text_content()).strip()
+                    ban_ck = (await ban_ck_el.text_content()).strip()
+                    if name == 'USD (50-100)':
+                        result['USD'] = {'mua': mua_ck, 'ban': ban_ck}
+                    elif name in ('EUR', 'JPY', 'SGD', 'GBP', 'CNY', 'AUD', 'CAD'):
+                        result[name] = {'mua': mua_ck, 'ban': ban_ck}
+
+                await browser.close()
+            if result:
+                break
+        except Exception as e:
+            print(f"EXIM Error (lan {attempt}/{max_retries}): {e}")
+            if attempt < max_retries:
+                await asyncio.sleep(8)
     rates['EXIM'] = result
     print(f"EXIM: {result}")
 
