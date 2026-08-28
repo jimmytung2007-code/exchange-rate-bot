@@ -35,9 +35,9 @@ BANKS_ORDER = ['TCB', 'EXIM', 'BIDV', 'VCB', 'AGRI', 'MBB', 'ACB', 'SACOM']
 CURRENCIES = ['USD', 'EUR', 'JPY', 'SGD', 'GBP', 'CNY', 'AUD', 'CAD']
 
 # Danh sach mo rong cho bang rieng chi TCB (co ca tien mat)
-TCB_EXTRA_LIST = ['USD (50,100)', 'AUD', 'CAD', 'SGD', 'EUR', 'GBP', 'JPY', 'KRW', 'NZD']
+TCB_EXTRA_LIST = ['USD (50,100)', 'AUD', 'CAD', 'SGD', 'EUR', 'GBP', 'JPY', 'KRW', 'NZD', 'CNY']
 TCB_EXTRA_CODE_MAP = {'USD (50,100)': 'USD'}
-TCB_EXTRA_DISPLAY_ORDER = ['USD', 'AUD', 'CAD', 'SGD', 'EUR', 'GBP', 'JPY', 'KRW', 'NZD']
+TCB_EXTRA_DISPLAY_ORDER = ['USD', 'AUD', 'CAD', 'SGD', 'EUR', 'GBP', 'JPY', 'KRW', 'NZD', 'CNY']
 
 tcb_extra_rates = {}
 
